@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1303471131 source:/home/userr/CodeBlocksProyects/compi2/main.cpp
+	<iostream>
+	<fstream>
+	<string>
+
