@@ -1,12 +1,8 @@
-<% import 
-
-%>
+<% import 1234 %>
 
 %class Miparser
 
-<% parser_code 
-
-%>
+<% parser_code asdfg %>
 
 
 

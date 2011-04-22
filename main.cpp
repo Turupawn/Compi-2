@@ -1,16 +1,29 @@
 #include <iostream>
 #include <fstream>
+#include <vector>
 #include <string>
 using namespace std;
 
-class Proyecto
+class Token
+{
+public:
+    string tipo;
+    string lexema;
+    Token(string tipo,string lexema)
+    {
+        this->tipo=tipo;
+        this->lexema=lexema;
+    }
+};
+
+class Lexico
 {
 public:
     string archivo;
-    Proyecto(string path)
+    vector<Token> tokens;
+    Lexico(string path)
     {
         archivo="";
-        char buffer;
         ifstream read;
         read.open("archivo.txt",ios::in | ios::binary);
         if(!read)
@@ -34,7 +47,7 @@ public:
             return true;
         return false;
     }
-    void generarTokens()
+    bool generarTokens()
     {
         int estado=0;
         int size_archivo=archivo.length();
@@ -58,36 +71,33 @@ public:
                         estado=2;
                     }else if(actual=='-')
                     {
-                        estado=4;
+                        estado=3;
                     }else if(actual=='|')
                     {
-                        //???
                         estado=0;
-                        cout<<"Nuevo toquen 6?:   \t"+token<<endl;
+                        tokens.push_back(Token("puntuacion",token));
                         token="";
                     }else if(actual=='<')
                     {
-                        estado=7;
+                        estado=4;
                     }else if(actual=='%')
                     {
-                        estado=9;
+                        estado=5;
                     }else if(actual==';')
                     {
-                        //???
                         estado=0;
-                        cout<<"Nuevo toquen 11?:\t"+token<<endl;
+                        tokens.push_back(Token("puntuacion",token));
                         token="";
                     }else if(actual==',')
                     {
-                        //???
                         estado=0;
-                        cout<<"Nuevo toquen 12?:\t"+token<<endl;
+                        tokens.push_back(Token("puntuacion",token));
                         token="";
                     }
                     else
                     {
                         cout<<"Error lexico se esperaba: letra, '{', '-', '|', '<', '>' o '|'"<<endl;
-                        return;
+                        return false;
                     }
                 break;
                 case 1:
@@ -99,7 +109,25 @@ public:
                         estado=0;
                         if(token[token.length()-1]==',' || token[token.length()-1]==';' || token[token.length()-1]=='|' || token[token.length()-1]=='{' || token[token.length()-1]=='-' || token[token.length()-1]=='<' || token[token.length()-1]=='%')
                             token[token.length()-1]='\0';
-                        cout<<"Nuevo toquen 1:  \t"+token<<endl;
+                        tokens.push_back(Token("cadena",token));
+                        if(token=="import")
+                        {
+                            string token_str_import="";
+                            for(;archivo[i]!='%' && archivo[i+1]!='>';i++)
+                            {
+                                token_str_import+=archivo[i];
+                            }
+                            tokens.push_back(Token("string import",token_str_import));
+                        }
+                        if(token=="parser_code")
+                        {
+                            string token_str_parser="";
+                            for(;archivo[i]!='%' && archivo[i+1]!='>';i++)
+                            {
+                                token_str_parser+=archivo[i];
+                            }
+                            tokens.push_back(Token("string parser",token_str_parser));
+                        }
                         token="";
                         i--;
                     }
@@ -111,82 +139,146 @@ public:
                     }else if(actual!='}' && i==size_archivo-1)
                     {
                         cout<<"Error: se esperaba '}'"<<endl;
-                        return;
+                        return false;
                     }else
                     {
-                        //???
                         estado=0;
-                        cout<<"Nuevo toquen 3?:   \t"+token<<endl;
+                        tokens.push_back(Token("codigo",token));
                         token="";
                     }
                 break;
                 case 3:
-                    //LOL nada?
-                break;
-                case 4:
                     if(actual=='>')
                     {
-                        //???
                         estado=0;
-                        cout<<"Nuevo token 5?:    \t"+token<<endl;
+                        tokens.push_back(Token("puntuacion",token));
                         token="";
                     }else
                     {
                         cout<<"Error lexico: se esperaba '>'"<<endl;
-                        return;
+                        return false;
                     }
                 break;
-                case 5:
-                    //LOL nada?
-                break;
-                case 6:
-                    //LOL nada?
-                break;
-                case 7:
+                case 4:
                     if(actual=='%')
                     {
-                        //???
                         estado=0;
-                        cout<<"Nuevo token 8?:   \t"+token<<endl;
+                        tokens.push_back(Token("puntuacion",token));
                         token="";
                     }else
                     {
                         cout<<"Error lexico: se esperaba '%'"<<endl;
-                        return;
+                        return false;
                     }
                 break;
-                case 8:
-                    //LOL nada?
-                break;
-                case 9:
+                case 5:
                     if(actual=='>')
                     {
-                        //???
                         estado=0;
-                        cout<<"Nuevo token 10?:\t"+token<<endl;
+                        tokens.push_back(Token("puntuacion",token));
                         token="";
                     }else
                     {
                         estado=0;
-                        token[token.length()-1]='\0';
-                        cout<<"Nuevo token 9?:    \t"+token<<endl;
+                        tokens.push_back(Token("puntuacion","%"));
                         token="";
                         i--;
                     }
                 break;
-                case 10:
-                break;
-                case 11:
-                break;
-                case 12:
-                break;
             }
+        }
+        return true;
+    }
+    void printTokens()
+    {
+        int size_tokens=tokens.size();
+        for(int i=0;i<size_tokens;i++)
+        {
+            cout<<tokens[i].tipo<<"     \t"<<tokens[i].lexema<<endl;
         }
     }
 };
+
+class Simbolo
+{
+public:
+    string tipo;//terinal o no terminal
+    string valor;
+};
+
+class Produccion
+{
+public:
+    string no_terminal;
+    vector<Simbolo> simbolos;
+};
+
+class Gramatica
+{
+public:
+    vector<Produccion> producciones;
+    vector<Token> tokens;
+    int i;
+    bool compararToken(string tipo,string lexema)
+    {
+        i++;
+        return tokens[i-1].tipo==tipo && tokens[i-1].lexema==lexema;
+    }
+    bool compararToken(string tipo)
+    {
+        i++;
+        return tokens[i-1].tipo==tipo;
+    }
+    Gramatica(Lexico lexico)
+    {
+        i=0;
+        this->tokens=lexico.tokens;
+        if(s())
+            cout<<"Gramatica correcta";
+        else
+            cout<<"Gramatica incorrecta";
+    }
+    bool s()
+    {
+        return import() && clase() && codigo() && gramatica();
+    }
+    bool import()
+    {
+        if(compararToken("puntuacion","<%"))
+        if(compararToken("cadena","import"))
+        if(compararToken("string import"))
+        if(compararToken("puntuacion","%>"))
+            return true;
+        return false;
+    }
+    bool clase()
+    {
+        if(compararToken("puntuacion","%"))
+        if(compararToken("cadena","class"))
+        if(compararToken("cadena"))
+            return true;
+        return false;
+    }
+    bool codigo()
+    {
+        if(compararToken("puntuacion","<%"))
+        if(compararToken("cadena","parser_code"))
+        if(compararToken("string parser"))
+        if(compararToken("puntuacion","%>"))
+            return true;
+        return false;
+    }
+    bool gramatica()
+    {
+        return true;
+    }
+};
+
 int main()
 {
-    Proyecto proyecto("archivo.txt");
-    proyecto.generarTokens();
+    Lexico lexico("archivo.txt");
+    lexico.generarTokens();
+    lexico.printTokens();
+    Gramatica gramatica(lexico);
     return 0;
 }
