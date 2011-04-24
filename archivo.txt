@@ -9,11 +9,11 @@
 terminal a,b,c;
 nonterminal Object X,Y;
 nonterminal Integer Z;
-
-x -> 	{system.out.print("1");} Y {codigo;} a {codigo;} b {codigo;}
+terminal a,b,c;
+X -> 	{system.out.print("1");} Y {codigo;} a {codigo;} b {codigo;}
    | 	Z;
 
 Y -> 	b b a;
 
-Z -> 	a c { $ = new Integer($0); }
+Z -> 	a c { $ = new Integer($0); } ->
 	|;
