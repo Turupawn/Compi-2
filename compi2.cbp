@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?> 
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
@@ -32,6 +32,10 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="Entrega2.h" />
+		<Unit filename="Gramatica.h" />
+		<Unit filename="Lexico.h" />
+		<Unit filename="archivo.txt" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />

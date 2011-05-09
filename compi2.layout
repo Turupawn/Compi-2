@@ -1,7 +1,16 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes" ?> 
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Debug" />
-	<File name="main.cpp" open="1" top="1" tabpos="0">
-		<Cursor position="7998" topLine="56" />
+	<File name="Gramatica.h" open="1" top="0" tabpos="3">
+		<Cursor position="10368" topLine="326" />
+	</File>
+	<File name="Lexico.h" open="1" top="0" tabpos="2">
+		<Cursor position="9095" topLine="234" />
+	</File>
+	<File name="archivo.txt" open="1" top="1" tabpos="4">
+		<Cursor position="58" topLine="0" />
+	</File>
+	<File name="main.cpp" open="1" top="0" tabpos="1">
+		<Cursor position="556" topLine="6" />
 	</File>
 </CodeBlocks_layout_file>

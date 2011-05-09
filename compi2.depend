@@ -4,9 +4,19 @@
 	<fstream>
 	<string>
 
-1303682740 source:/home/userr/GitProyects/compi2/main.cpp
+1304939110 source:/home/userr/GitProyects/compi2/main.cpp
 	<iostream>
 	<fstream>
 	<vector>
 	<string>
+	<cstring>
+	"Lexico.h"
+	"Gramatica.h"
+	"Entrega2.h"
+
+1304800175 /home/userr/GitProyects/compi2/Lexico.h
+
+1304940958 /home/userr/GitProyects/compi2/Gramatica.h
+
+1304941358 /home/userr/GitProyects/compi2/Entrega2.h
 
