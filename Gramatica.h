@@ -37,12 +37,35 @@ public:
     vector<Simbolo> simbolos;
     vector<string> set_no_terminales;
     int posicion;
+    string nombre;
     Produccion(string nombre)
     {
         this->nombre=nombre;
         posicion=0;
     }
-    string nombre;
+    Simbolo getSimboloActual()
+    {
+        return simbolos[posicion];
+    }
+    void print()
+    {
+        cout<<nombre<<"->";
+        for(int i=0;i<simbolos.size();i++)
+        {
+            cout<<" ";
+            if(posicion==i)
+                cout<<".";
+            cout<<simbolos[i].nombre;
+        }
+        if(posicion==simbolos.size())
+            cout<<".";
+        cout<<"{";
+        for(int i=0;i<set_no_terminales.size();i++)
+            cout<<set_no_terminales[i]<<",";
+        cout<<"}";
+        cout<<endl;
+    }
+
 };
 
 class Gramatica
@@ -78,6 +101,10 @@ public:
         if(existeTerminal(simbolo.nombre))
             simbolo.tipo="terminal";
         lista_producciones[i2].simbolos.push_back(simbolo);
+    }
+    Gramatica()
+    {
+
     }
     Gramatica(Lexico lexico)
     {

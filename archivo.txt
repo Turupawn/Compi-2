@@ -1,11 +1,5 @@
-<% parser_code asdfgg%>
-%class Miparserr
-<% import 1234 %>
-nonterminal Object A,B;
-terminal c,d,e,f;
-A-> c B B
-    |d B B;
-B-> e A
-    |f
-   |;
-
+nonterminal Object C,S;
+terminal c,d;
+S->C C;
+C->c C
+    |d;

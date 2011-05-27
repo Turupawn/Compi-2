@@ -1,22 +1,18 @@
 # depslib dependency file v1.0
-1303471131 source:/home/userr/CodeBlocksProyects/compi2/main.cpp
-	<iostream>
-	<fstream>
-	<string>
-
-1304939110 source:/home/userr/GitProyects/compi2/main.cpp
+1306471268 source:/home/userr/GitProyects/compi2/main.cpp
 	<iostream>
 	<fstream>
 	<vector>
 	<string>
 	<cstring>
+	<sstream>
 	"Lexico.h"
 	"Gramatica.h"
 	"Entrega2.h"
 
 1304800175 /home/userr/GitProyects/compi2/Lexico.h
 
-1304940958 /home/userr/GitProyects/compi2/Gramatica.h
+1306479276 /home/userr/GitProyects/compi2/Gramatica.h
 
-1304941358 /home/userr/GitProyects/compi2/Entrega2.h
+1306493625 /home/userr/GitProyects/compi2/Entrega2.h
 

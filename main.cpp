@@ -4,6 +4,7 @@
 #include <string>
 #include <cstring>
 using namespace std;
+#include <sstream>
 #include "Lexico.h"
 #include "Gramatica.h"
 #include "Entrega2.h"
@@ -20,9 +21,10 @@ int main()
     //gramatica.printTerminales();
     //gramatica.printNoTerminales();
     //gramatica.printProducciones();
-    Misterio misterio(gramatica.lista_producciones);
+    Misterio misterio(gramatica);
     //misterio.printProduccionesProcesadas();
-    misterio.funcion_misterio2();
+    //misterio.funcion_misterio();
+    misterio.funcionMisterio();
     //cout<<misterio.compararListaProducciones(misterio.nodos[0],misterio.nodos[0]);
     return 0;
 }
