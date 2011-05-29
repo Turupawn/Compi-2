@@ -7,7 +7,7 @@ using namespace std;
 #include <sstream>
 #include "Lexico.h"
 #include "Gramatica.h"
-#include "Entrega2.h"
+#include "Entrega3.h"
 
 int main()
 {
@@ -21,10 +21,18 @@ int main()
     //gramatica.printTerminales();
     //gramatica.printNoTerminales();
     //gramatica.printProducciones();
-    Misterio misterio(gramatica);
-    //misterio.printProduccionesProcesadas();
-    //misterio.funcion_misterio();
-    misterio.funcionMisterio();
-    //cout<<misterio.compararListaProducciones(misterio.nodos[0],misterio.nodos[0]);
+    Entrega2 entrega2(gramatica);
+    //entrega2.printProduccionesProcesadas();
+    //entrega2.funcion_misterio();
+    //cout<<entrega2.compararListaProducciones(entrega2.nodos[0],entrega2.nodos[0]);
+    Tabla tabla(entrega2.lista_nodos,gramatica.terminales,gramatica.no_terminales,gramatica.lista_producciones);
+    vector<string> tokens;
+    tokens.push_back("a");
+    tokens.push_back("x");
+    tokens.push_back("b");
+    if(tabla.verificarTokens(tokens))
+        cout<<"input correcto";
+    else
+        cout<<"input incorrecto";
     return 0;
 }

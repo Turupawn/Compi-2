@@ -1,3 +1,21 @@
+int getLenght(string str)
+{
+    int i;
+    for(i=0;str[i]!='\0';i++);
+    return i;
+}
+bool compararCadenas(string str1,string str2)
+{
+    if(getLenght(str1)!=getLenght(str2))
+        return false;
+    for(int i=0;i<getLenght(str1);i++)
+    {
+        if(str1[i]!=str2[i])
+            return false;
+    }
+    return true;
+}
+
 class Terminal
 {
 public:
@@ -38,10 +56,47 @@ public:
     vector<string> set_no_terminales;
     int posicion;
     string nombre;
+    bool procesado;
     Produccion(string nombre)
     {
         this->nombre=nombre;
         posicion=0;
+        procesado=false;
+    }
+    bool compararProduccion(Produccion pb)
+    {
+        Produccion pa=*this;
+        if(pa.simbolos.size()!=pb.simbolos.size())
+            return false;
+        if(pa.set_no_terminales.size()!=pb.set_no_terminales.size())
+            return false;
+        for(int i=0;i<pa.simbolos.size();i++)
+            if(!compararCadenas(pa.simbolos[i].nombre,pb.simbolos[i].nombre))
+                return false;
+        for(int i=0;i<pa.set_no_terminales.size();i++)
+            if(!compararCadenas(pa.set_no_terminales[i],pb.set_no_terminales[i]))
+                return false;
+        return pa.posicion==pb.posicion;
+    }
+    bool compararProduccionSinTerminales(Produccion pb)
+    {
+        Produccion pa=*this;
+        if(pa.simbolos.size()!=pb.simbolos.size())
+            return false;
+        for(int i=0;i<pa.simbolos.size();i++)
+            if(!compararCadenas(pa.simbolos[i].nombre,pb.simbolos[i].nombre))
+                return false;
+        return pa.posicion==pb.posicion;
+    }
+    bool compararProduccionSimple(Produccion pb)
+    {
+        Produccion pa=*this;
+        if(pa.simbolos.size()!=pb.simbolos.size())
+            return false;
+        for(int i=0;i<pa.simbolos.size();i++)
+            if(!compararCadenas(pa.simbolos[i].nombre,pb.simbolos[i].nombre))
+                return false;
+        return true;
     }
     Simbolo getSimboloActual()
     {
@@ -444,7 +499,7 @@ public:
     {
         int size_terminales=terminales.size();
         for(int i=0;i<size_terminales;i++)
-            if(terminales[i].nombre[0]==nombre[0])
+            if(compararCadenas(terminales[i].nombre,nombre))
                 return true;
         return false;
     }
@@ -453,7 +508,7 @@ public:
         int size_no_terminales=no_terminales.size();
         for(int i=0;i<size_no_terminales;i++)
         {
-            if(no_terminales[i].nombre[0]==nombre[0])
+            if(compararCadenas(no_terminales[i].nombre,nombre))
                 return true;
         }
         return false;
@@ -466,12 +521,39 @@ public:
         {
             bool flag=false;
             for(int j=0;j<size_producciones;j++)
-                if(lista_producciones[j].nombre[0]==no_terminales[i].nombre[0])
+                if(compararCadenas(lista_producciones[j].nombre,no_terminales[i].nombre))
                     flag=true;
             if(!flag)
                 return false;
         }
         return true;
 
+    }
+    vector<string> primero(string produccion)
+    {
+        vector <string> resultado;
+        if(!existeNoTerminal(produccion))
+        {
+            resultado.push_back(produccion);
+            return resultado;
+        }
+        for(int i=0;i<lista_producciones.size();i++)
+        {
+            if(compararCadenas(lista_producciones[i].nombre,produccion))
+                if(lista_producciones[i].simbolos.size()!=0)
+                    if(compararCadenas(lista_producciones[i].simbolos[0].tipo,"terminal"))
+                    {
+                        resultado.push_back(lista_producciones[i].simbolos[0].nombre);
+                    }
+                    else
+                    {
+                        vector<string> temp=primero(lista_producciones[i].simbolos[0].nombre);
+                        for(int _i=0;_i<temp.size();_i++)
+                            resultado.push_back(temp[_i]);
+                    }
+                else
+                    resultado.push_back("E");
+        }
+        return resultado;
     }
 };

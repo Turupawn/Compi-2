@@ -1,20 +1,4 @@
-int getLenght(string str)
-{
-    int i;
-    for(i=0;str[i]!='\0';i++);
-    return i;
-}
-bool compararCadenas(string str1,string str2)
-{
-    if(getLenght(str1)!=getLenght(str2))
-        return false;
-    for(int i=0;i<getLenght(str1);i++)
-    {
-        if(str1[i]!=str2[i])
-            return false;
-    }
-    return true;
-}
+
 string toString(int x)
 {
     std::stringstream out;
@@ -60,135 +44,51 @@ public:
         for(int i=0;i<producciones.size();i++)
             getProduccion(i).print();
     }
+    bool existe(vector<Nodo> nodos)
+    {
+        for(int i=0;i<nodos.size();i++)
+            if(producciones[0].compararProduccion(nodos[i].producciones[0]))
+                return true;
+        return false;
+    }
+    int intExisteSinPrimeros(vector<Nodo> nodos)
+    {
+        for(int i=0;i<nodos.size();i++)
+            if(producciones[0].compararProduccionSinTerminales(nodos[i].producciones[0]))
+                return i;
+        return -1;
+    }
 };
-class Misterio
+class Entrega2
 {
 public:
     vector<Produccion> lista_producciones;
-    vector< vector<Produccion> > nodos;
+    vector<Nodo> lista_nodos;
     int num_nodo;
     Gramatica gramatica;
-    Misterio(Gramatica gramatica)
+    Entrega2(Gramatica gramatica)
     {
         this->lista_producciones=gramatica.lista_producciones;
-        aumentarProduccion();
         num_nodo=0;
-        gramatica=gramatica;
-    }
-
-    void aumentarProduccion()
-    {
+        this->gramatica=gramatica;
+        //aumentar la produccion
         lista_producciones.insert(lista_producciones.begin(),Produccion("prima_"+lista_producciones[0].nombre));
         lista_producciones[0].simbolos.push_back(Simbolo("no terminal",lista_producciones[1].nombre));
-    }
-    void printProducciones()
-    {
-        int size_producciones=lista_producciones.size();
-        for(int i=0;i<size_producciones;i++)
-        {
-            cout<<endl;
-            cout<<lista_producciones[i].nombre<<endl;
-            cout<<"=================="<<endl;
-            for(int j=0;j<lista_producciones[i].simbolos.size();j++)
-            {
-                cout<<"-"<<lista_producciones[i].simbolos[j].nombre;
-                cout<<" ("<<lista_producciones[i].simbolos[j].tipo<<")"<<endl;
-            }
-        }
-    }
-    void printNodo(int i)
-    {
-        vector<Produccion> lista=nodos[i];
-        cout<<"I"<<i<<endl;
-        for(int i=0;i<lista.size();i++)
-            lista[i].print();
-    }
-
-    ////
-    vector <Produccion> crearNodo(Produccion produccion_actual,int simbolo)
-    {
-        vector <Produccion> lista_actual;
-        produccion_actual.posicion=simbolo;
-        lista_actual.push_back(produccion_actual);
-        if(simbolo>=produccion_actual.simbolos.size())
-            return lista_actual;
-        Simbolo simbolo_actual=produccion_actual.simbolos[simbolo];
-        if(simbolo_actual.tipo=="no terminal")
-        {
-            for(int i=0;i<lista_producciones.size();i++)
-            {
-                if(compararCadenas(lista_producciones[i].nombre,simbolo_actual.nombre))
-                {
-                    vector <Produccion> temp=crearNodo(lista_producciones[i],0);
-                    for(int i=0;i<temp.size();i++)
-                        lista_actual.push_back(temp[i]);
-                }
-            }
-        }
-        return lista_actual;
-    }
-    bool compararProducciones(Produccion pa,Produccion pb)
-    {
-        if(pa.simbolos.size()!=pb.simbolos.size())
-            return false;
-        if(pa.set_no_terminales.size()!=pb.set_no_terminales.size())
-            return false;
-        for(int i=0;i<pa.simbolos.size();i++)
-            if(!compararCadenas(pa.simbolos[i].nombre,pb.simbolos[i].nombre))
-                return false;
-        for(int i=0;i<pa.set_no_terminales.size();i++)
-            if(!compararCadenas(pa.set_no_terminales[i],pb.set_no_terminales[i]))
-                return false;
-        return pa.posicion==pb.posicion;
-    }
-    bool compararListaProducciones(vector<Produccion> pa,vector<Produccion> pb)
-    {
-        if(pa.size()!=pb.size())
-            return false;
-        for(int i=0;i<pa.size();i++)
-            if(!compararProducciones(pa[i],pb[i]))
-                return false;
-        return true;
-    }
-    //
-    vector<string> primero(string produccion)
-    {
-        vector <string> resultado;
-        if(!existeProduccion(produccion))
-        {
-            resultado.push_back(produccion);
-            return resultado;
-        }
-        for(int i=0;i<lista_producciones.size();i++)
-        {
-            if(compararCadenas(lista_producciones[i].nombre,produccion))
-                if(lista_producciones[i].simbolos.size()!=0)
-                    if(compararCadenas(lista_producciones[i].simbolos[0].tipo,"terminal"))
-                    {
-                        resultado.push_back(lista_producciones[i].simbolos[0].nombre);
-                    }
-                    else
-                    {
-                        vector<string> temp=primero(lista_producciones[i].simbolos[0].nombre);
-                        for(int _i=0;_i<temp.size();_i++)
-                            resultado.push_back(temp[_i]);
-                    }
-                else
-                    resultado.push_back("E");
-        }
-        return resultado;
+        //generar nodos
+        generarNodos();
     }
     vector<string> getListaPrimeros(Produccion produccion,vector<string> lista_anterior)
     {
         vector<string> primeros;
         if(produccion.posicion+1>=produccion.simbolos.size())
         {
+            if(lista_anterior.size()==0)//!!!!!!!!!!!!!!
+              lista_anterior.push_back("$");
             return lista_anterior;
-            //primeros.push_back("$");
         }
         else
         {
-            vector<string> temp=primero(produccion.simbolos[produccion.posicion+1].nombre);
+            vector<string> temp=gramatica.primero(produccion.simbolos[produccion.posicion+1].nombre);
             for(int j=0;j<temp.size();j++)
             {
                 primeros.push_back(temp[j]);
@@ -196,7 +96,6 @@ public:
         }
         return primeros;
     }
-
     vector<Produccion> getProduccionesRecursiva(Produccion produccion,vector<string> sp)
     {
         vector<Produccion> resultado;
@@ -205,13 +104,13 @@ public:
         resultado.push_back(produccion);
 
         Simbolo s_actual=produccion.getSimboloActual();
-        if(existeProduccion(s_actual.nombre))
+        if(gramatica.existeNoTerminal(s_actual.nombre))
         {
             for(int i=0;i<lista_producciones.size();i++)
             {
                 if(compararCadenas(lista_producciones[i].nombre,s_actual.nombre))
                 {
-                    if(existeProduccion(lista_producciones[i].simbolos[0].nombre))
+                    if(gramatica.existeNoTerminal(lista_producciones[i].simbolos[0].nombre))
                     {
                         vector<Produccion>temp=getProduccionesRecursiva(lista_producciones[i],getListaPrimeros(lista_producciones[i],sp));
                         for(int j=0;j<temp.size();j++)
@@ -228,13 +127,6 @@ public:
 
         return resultado;
     }
-    bool existeProduccion(string nombre)
-    {
-        for(int i=0;i<lista_producciones.size();i++)
-            if(compararCadenas(lista_producciones[i].nombre,nombre))
-                return true;
-        return false;
-    }
     Nodo getNodo(Produccion produccion,string nombre)
     {
         Nodo nodo(nombre);
@@ -246,7 +138,6 @@ public:
         //Validacion de fin de posicion
         if(p_incial.simbolos.size()<=p_incial.posicion)
             return nodo;
-
         //Get el simbolo actual
         Simbolo s_actual=p_incial.getSimboloActual();
         //Llamada recursiva si es no terminal
@@ -255,7 +146,8 @@ public:
             for(int i=0;i<lista_producciones.size();i++)
                 if(compararCadenas(lista_producciones[i].nombre,s_actual.nombre))
                 {
-                    vector<string>s_temp;s_temp.push_back("$");
+                    vector<string>s_temp;
+                    s_temp=produccion.set_no_terminales;
                     vector<Produccion> temp=getProduccionesRecursiva(lista_producciones[i],getListaPrimeros(p_incial,s_temp));
                     for(int i=0;i<temp.size();i++)
                         nodo.agregarProduccion(temp[i]);
@@ -263,49 +155,77 @@ public:
         }
         return nodo;
     }
-    bool noRepetida(Nodo nodo,vector<Nodo> nodos)
-    {
-        for(int i=0;i<nodos.size();i++)
-            if(compararProducciones(nodo.producciones[0],nodos[i].producciones[0]))
-                return false;
-        return true;
-    }
     vector<Nodo> procesarNodo(Nodo nodo)
     {
         vector<Nodo> nodos;
         for(int i=0;i<nodo.producciones.size();i++)//para cada produccion
+            nodo.producciones[i].procesado=false;
+        for(int i=0;i<nodo.producciones.size();i++)//para cada produccion
         {
             Produccion temp=nodo.producciones[i];
-            temp.posicion++;//avanzo la la posicion del punto
-            num_nodo++;//avanzo el numero de i
-            nodos.push_back(getNodo(temp,"i"+toString(num_nodo)));
+            if(!temp.procesado)
+            {
+                nodo.producciones[i].procesado=true;
+                temp.posicion++;//avanzo la la posicion del punto
+                num_nodo++;//avanzo el numero de i
+                Nodo n_temp=getNodo(temp,"i"+toString(num_nodo));
+                for(int j=i+1;j<nodo.producciones.size();j++)//agregar repetidos!!!!!!!!!!!!
+                {
+                    if(temp.posicion<=temp.simbolos.size() && nodo.producciones[j].posicion<nodo.producciones[j].simbolos.size())
+                    {
+                        if(compararCadenas(nodo.producciones[j].getSimboloActual().nombre,temp.simbolos[temp.posicion-1].nombre))//si encuentro uno repetido
+                        {
+                            //creo un nodo temporar
+                            Produccion p_temp2=nodo.producciones[j];
+                            p_temp2.posicion++;
+                            nodo.producciones[j].procesado=true;
+                            Nodo n_temp2=getNodo(p_temp2,"?"+toString(num_nodo));
+                            //!!!!!!!!!!!!!
+                            for(int k=0;k<n_temp2.producciones.size();k++)//agrego las producciones/set_no_terminales del temporar al actual
+                            {
+                                bool flag=false;
+                                for(int l=0;l<n_temp2.producciones.size();l++)
+                                    if(n_temp.producciones[l].compararProduccionSinTerminales(n_temp2.producciones[k]))//caso set no terminales
+                                    {
+                                        for(int m=0;m<n_temp2.producciones[l].set_no_terminales.size();m++)
+                                            n_temp.producciones[l].set_no_terminales.push_back(n_temp2.producciones[l].set_no_terminales[m]);
+                                        flag=true;
+                                        break;
+                                    }
+                                if(!flag)//caso agrego completo
+                                    n_temp.producciones.push_back(n_temp2.producciones[k]);
+                            }
+                        }
+                    }
+                }//fin agregar repetidos
+                nodos.push_back(n_temp);
+            }
         }
         return nodos;
     }
-    void funcionMisterio()
+    vector<Nodo> generarNodos()
     {
-        vector<Nodo> nodos;
-
         //Crear I0
         Nodo i0=getNodo(lista_producciones[0],"i0");
         i0.producciones[0].set_no_terminales.push_back("$");
-        nodos.push_back(i0);
+        lista_nodos.push_back(i0);
 
         //Ciclo main de procesamiento de nodos
-        for(int x=0;x<nodos.size();x++)
+        for(int x=0;x<lista_nodos.size();x++)
         {
-            vector<Nodo> n_temp=procesarNodo(nodos[x]);//get nodo a procesar
+            vector<Nodo> n_temp=procesarNodo(lista_nodos[x]);//get nodo a procesar
             for(int i=0;i<n_temp.size();i++)//para cada produccion
                 if(n_temp[i].producciones.size()>0)//si no esta vacia
-                    if(noRepetida(n_temp[i],nodos))//si no esta repetida
-                        nodos.push_back(n_temp[i]);//agregar nodo
+                    if(!n_temp[i].existe(lista_nodos))//si no esta repetida
+                        lista_nodos.push_back(n_temp[i]);//agregar nodo
         }
 
         //Imprimir todos los nodos
-        for(int i=0;i<nodos.size();i++)
+        for(int i=0;i<lista_nodos.size();i++)
         {
             cout<<"i"+toString(i)<<endl;
-            nodos[i].print();
+            lista_nodos[i].print();
         }
+        return lista_nodos;
     }
 };
