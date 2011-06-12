@@ -1,0 +1,153 @@
+
+import com.sun.istack.internal.FinalArrayList;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/**
+ *
+ * @author userr
+ */
+class ListaTokens
+{
+    ArrayList<String>tokens;
+    int pos;
+    public ListaTokens()
+    {
+        tokens=new ArrayList<String>();
+        pos=0;
+    }
+    String nextToken()
+    {
+        pos++;
+        return tokens.get(pos-1);
+    }
+}
+
+class Pila
+{
+    ArrayList<ElementoPila> elementos;
+    public Pila()
+    {
+        elementos=new ArrayList<ElementoPila>();
+    }
+    void push(ElementoPila e)
+    {
+        elementos.add(e);
+    }
+    ElementoPila pop()
+    {
+        ElementoPila temp=elementos.get(elementos.size()-1);
+        elementos.remove(elementos.size()-1);
+        return temp;
+    }
+}
+
+class ElementoPila
+{
+    int simbolo;
+    int nodo;
+    String simbolo_produccion;
+    String tipo;
+
+    public ElementoPila(int simbolo, int nodo)
+    {
+        this.simbolo = simbolo;
+        this.nodo = nodo;
+        tipo="terminal";
+    }
+    public ElementoPila(String simbolo_produccion, int nodo)
+    {
+        this.simbolo_produccion = simbolo_produccion;
+        this.nodo = nodo;
+        tipo="no terminal";
+    }
+    public void print()
+    {
+        System.out.print(" "+nodo);
+        if(tipo.equals("terminal"))
+            System.out.print(simbolo);
+        else
+            System.out.print(simbolo_produccion);
+    }
+}
+class FilaTerminal
+{
+    String terminal;
+    String tipo;
+    int nodo;
+    public FilaTerminal(String terminal,String tipo,int nodo)
+    {
+        this.terminal=terminal;
+        this.tipo=tipo;
+        this.nodo=nodo;
+    }
+};
+class FilaNoTerminal
+{
+    String no_terminal;
+    int nodo;
+    FilaNoTerminal(String no_terminal,int nodo)
+    {
+        this.no_terminal=no_terminal;
+        this.nodo=nodo;
+    }
+};
+class Fila
+{
+    ArrayList<FilaTerminal> terminales;
+    ArrayList<FilaNoTerminal> no_terminales;
+    public Fila()
+    {
+        terminales=new ArrayList<FilaTerminal>();
+        no_terminales=new ArrayList<FilaNoTerminal>();
+    }
+};
+
+class Simbolo
+{
+    int terminal;
+    String no_terminal;
+    String tipo;
+
+    public Simbolo(int terminal)
+    {
+        this.terminal=terminal;
+        tipo="terminal";
+    }
+
+    public Simbolo(String no_terminal)
+    {
+        this.no_terminal=no_terminal;
+        tipo="no terminal";
+    }
+}
+
+class Produccion
+{
+   String  nombre;
+   ArrayList<Simbolo> simbolos;
+
+    public Produccion(String nombre)
+    {
+        simbolos=new ArrayList<Simbolo>();
+        this.nombre = nombre;
+    }
+
+};
+
+public class MiParser {
+    ArrayList<Produccion>gramatica;
+    ArrayList<Fila> filas;
+    public MiParser()
+    {
+        filas=new FinalArrayList<Fila>();
+        gramatica=new ArrayList<Produccion>();
+
+        //Inicializar gramatica
+        //Inicializar tabla
+

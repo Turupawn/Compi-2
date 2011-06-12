@@ -57,11 +57,13 @@ public:
     int posicion;
     string nombre;
     bool procesado;
+    int ir_a_nodo;
     Produccion(string nombre)
     {
         this->nombre=nombre;
         posicion=0;
         procesado=false;
+        ir_a_nodo=-1;
     }
     bool compararProduccion(Produccion pb)
     {
@@ -117,7 +119,8 @@ public:
         cout<<"{";
         for(int i=0;i<set_no_terminales.size();i++)
             cout<<set_no_terminales[i]<<",";
-        cout<<"}";
+        cout<<"}  ir a:"<<ir_a_nodo;
+
         cout<<endl;
     }
 
@@ -532,12 +535,12 @@ public:
     vector<string> primero(string produccion)
     {
         vector <string> resultado;
-        if(!existeNoTerminal(produccion))
+        if(!existeNoTerminal(produccion))//si es terminal solo se mete el mismo
         {
             resultado.push_back(produccion);
             return resultado;
         }
-        for(int i=0;i<lista_producciones.size();i++)
+        for(int i=0;i<lista_producciones.size();i++)//para cada produccion
         {
             if(compararCadenas(lista_producciones[i].nombre,produccion))
                 if(lista_producciones[i].simbolos.size()!=0)

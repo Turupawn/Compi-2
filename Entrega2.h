@@ -1,4 +1,19 @@
-
+bool contieneCadena(vector<string> lista,string str)
+{
+    bool flag=false;
+    for(int l=0;l<lista.size();l++)
+        if(compararCadenas(lista[l],str))
+            flag=true;
+    return flag;
+}
+bool contieneProduccionSinTerminales(vector<Produccion>lista,Produccion produccion)
+{
+    bool flag=false;
+    for(int l=0;l<lista.size();l++)
+        if(produccion.compararProduccionSinTerminales(lista[l]))
+            flag=true;
+    return flag;
+}
 string toString(int x)
 {
     std::stringstream out;
@@ -96,39 +111,9 @@ public:
         }
         return primeros;
     }
-    vector<Produccion> getProduccionesRecursiva(Produccion produccion,vector<string> sp)
-    {
-        vector<Produccion> resultado;
-        produccion.set_no_terminales=sp;
-        //agrego inicial
-        resultado.push_back(produccion);
-
-        Simbolo s_actual=produccion.getSimboloActual();
-        if(gramatica.existeNoTerminal(s_actual.nombre))
-        {
-            for(int i=0;i<lista_producciones.size();i++)
-            {
-                if(compararCadenas(lista_producciones[i].nombre,s_actual.nombre))
-                {
-                    if(gramatica.existeNoTerminal(lista_producciones[i].simbolos[0].nombre))
-                    {
-                        vector<Produccion>temp=getProduccionesRecursiva(lista_producciones[i],getListaPrimeros(lista_producciones[i],sp));
-                        for(int j=0;j<temp.size();j++)
-                            resultado.push_back(temp[j]);
-                    }else
-                    {
-                        Produccion temp=lista_producciones[i];
-                        temp.set_no_terminales=getListaPrimeros(produccion,sp);
-                        resultado.push_back(temp);
-                    }
-                }
-            }
-        }
-
-        return resultado;
-    }
     Nodo getNodo(Produccion produccion,string nombre)
     {
+        vector<string> look_ahead_padre=produccion.set_no_terminales;
         Nodo nodo(nombre);
         //Creacion de produccion inicial
         Produccion p_incial=produccion;
@@ -138,20 +123,48 @@ public:
         //Validacion de fin de posicion
         if(p_incial.simbolos.size()<=p_incial.posicion)
             return nodo;
-        //Get el simbolo actual
-        Simbolo s_actual=p_incial.getSimboloActual();
-        //Llamada recursiva si es no terminal
-        if(s_actual.tipo=="no terminal")
+
+        for(int i=0;i<nodo.producciones.size();i++)//for each produccion del nodo
         {
-            for(int i=0;i<lista_producciones.size();i++)
-                if(compararCadenas(lista_producciones[i].nombre,s_actual.nombre))
+            Produccion p_actual=nodo.producciones[i];
+            Simbolo s_actual=p_actual.getSimboloActual();
+            if(s_actual.tipo=="no terminal")//para cada no terminal
+            {
+                for(int j=0;j<lista_producciones.size();j++)//agregar sus producciones
                 {
-                    vector<string>s_temp;
-                    s_temp=produccion.set_no_terminales;
-                    vector<Produccion> temp=getProduccionesRecursiva(lista_producciones[i],getListaPrimeros(p_incial,s_temp));
-                    for(int i=0;i<temp.size();i++)
-                        nodo.agregarProduccion(temp[i]);
+                    if(compararCadenas(lista_producciones[j].nombre,s_actual.nombre))
+                    {
+                        Produccion produccion_a_agregar=lista_producciones[j];
+                        if(!contieneProduccionSinTerminales(nodo.producciones,produccion_a_agregar))
+                        {
+                            int x=look_ahead_padre.size();
+                            for(int k=0;k<x;k++)//agregacion de cada uno si no existe
+                            {
+                                if(!contieneCadena(produccion_a_agregar.set_no_terminales,look_ahead_padre[k]))
+                                    produccion_a_agregar.set_no_terminales.push_back(look_ahead_padre[k]);
+                            }
+                            //agregar los los primeros de beta tbn
+                            if(p_actual.posicion+1<p_actual.simbolos.size())
+                            {
+                                string beta=p_actual.simbolos[p_actual.posicion+1].nombre;
+                                vector <string> primero_beta=gramatica.primero(beta);
+                                for(int k=0;k<primero_beta.size();k++)
+                                {
+                                    if(!contieneCadena(produccion_a_agregar.set_no_terminales,primero_beta[k]))
+                                        produccion_a_agregar.set_no_terminales.push_back(primero_beta[k]);
+                                }
+                            }
+                            //agregar los look ahead acarreados tbn
+                            for(int k=0;k<p_actual.set_no_terminales.size();k++)
+                            {
+                                if(!contieneCadena(produccion_a_agregar.set_no_terminales,p_actual.set_no_terminales[k]))
+                                    produccion_a_agregar.set_no_terminales.push_back(p_actual.set_no_terminales[k]);
+                            }
+                            nodo.agregarProduccion(produccion_a_agregar);
+                        }
+                    }
                 }
+            }
         }
         return nodo;
     }
@@ -203,23 +216,54 @@ public:
         }
         return nodos;
     }
+    vector<Nodo> agruparNodos(vector<Nodo>nodos)
+    {
+        vector<Nodo>resultado;
+        for(int i=0;i<nodos.size();i++)//for each nodo n_actual
+        {
+            bool flag=false;
+            Nodo n_actual=nodos[i];
+            for(int j=0;j<resultado.size();j++)//lo busco versus los agregados en resultado
+                if(n_actual.producciones[0].compararProduccionSinTerminales(resultado[j].producciones[0]) && j!=i)//si encuentro uno igual sin los look ahead
+                {
+                    flag=true;//marco flag q encontre para no pushearlo a resultado y...
+                    for(int k=0;k<n_actual.producciones.size();k++)//hago union
+                    {
+                        Produccion p_actual=n_actual.producciones[k];
+                        for(int l=0;l<p_actual.set_no_terminales.size();l++)
+                        {
+                            string la_actual=p_actual.set_no_terminales[l];
+                            if(!contieneCadena(resultado[j].producciones[k].set_no_terminales,la_actual))
+                                resultado[j].producciones[k].set_no_terminales.push_back(la_actual);
+                        }
+                    }
+                }
+            if(!flag)//no encontre ninguno igual
+            {
+                resultado.push_back(n_actual);// lo pusheo
+            }
+        }
+        return resultado;//:D
+    }
     vector<Nodo> generarNodos()
     {
         //Crear I0
-        Nodo i0=getNodo(lista_producciones[0],"i0");
-        i0.producciones[0].set_no_terminales.push_back("$");
+        Produccion p_i0=lista_producciones[0];
+        p_i0.set_no_terminales.push_back("$");
+        Nodo i0=getNodo(p_i0,"i0");
         lista_nodos.push_back(i0);
 
         //Ciclo main de procesamiento de nodos
         for(int x=0;x<lista_nodos.size();x++)
         {
             vector<Nodo> n_temp=procesarNodo(lista_nodos[x]);//get nodo a procesar
-            for(int i=0;i<n_temp.size();i++)//para cada produccion
-                if(n_temp[i].producciones.size()>0)//si no esta vacia
-                    if(!n_temp[i].existe(lista_nodos))//si no esta repetida
+            for(int i=0;i<n_temp.size();i++)//para cada nodo
+                if(n_temp[i].producciones.size()>0)//si no esta vacio
+                    if(!n_temp[i].existe(lista_nodos))//si no esta repetido
                         lista_nodos.push_back(n_temp[i]);//agregar nodo
         }
-
+        //agruparacion de nodos
+        lista_nodos=agruparNodos(lista_nodos);
         //Imprimir todos los nodos
         for(int i=0;i<lista_nodos.size();i++)
         {

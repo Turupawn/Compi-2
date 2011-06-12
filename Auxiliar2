@@ -1,0 +1,130 @@
+
+    }
+    void print()
+    {
+        for(Fila f : filas)
+        {
+            for(FilaTerminal ft : f.terminales)
+            {
+                System.out.print(ft.terminal+ft.tipo+ft.nodo+", ");
+            }
+            System.out.print(" | ");
+            for(FilaNoTerminal ft : f.no_terminales)
+            {
+                System.out.print(ft.no_terminal+ft.nodo+", ");
+            }
+            System.out.println();
+        }
+    }
+    boolean verificarTokens (ListaTokens lista_tokens) throws Exception
+    {
+        int fila_actual=0;
+        String token=lista_tokens.nextToken();
+        Pila pila=new Pila();
+        pila.push(new ElementoPila(-1,0));
+
+        do
+        {
+            if(esDesplazar(fila_actual, token))
+            {
+                pila.push(new ElementoPila(token, getFilaTerminal(fila_actual, token).nodo));//push
+                fila_actual=getFilaTerminal(fila_actual, token).nodo;//desplazar
+                token=lista_tokens.nextToken();//consumir token
+            }else if(esReducir(fila_actual, token))
+            {
+                //Popear la pila
+                int numero_produccion=getFilaTerminal(fila_actual, token).nodo;
+                ArrayList<Simbolo>simbolos=getSimbolos(numero_produccion);
+                for(int i=simbolos.size()-1;i>=0;i--)
+                {
+                    ElementoPila e=pila.pop();
+                    if(!compararPilaSimbolo(e,simbolos.get(i)))
+                        return false;
+                }
+                //get variables necesarias
+                String nombre_produccion=getNombreProduccion(numero_produccion);
+                int pos=pila.elementos.get(pila.elementos.size()-1).nodo;
+                int get_desplazamiento=getFilaNoTerminal(pos, nombre_produccion).nodo;
+                //pushear
+                pila.push(new ElementoPila(nombre_produccion, get_desplazamiento));
+                //desplazo
+                fila_actual=get_desplazamiento;
+
+                int x=10;
+            }else if(esAceptacion(fila_actual, token))
+            {
+                return true;
+            }else
+            {
+                return false;
+            }
+        }while(true);
+
+        //return fila_actual==1;
+    }
+
+    boolean compararPilaSimbolo(ElementoPila e,Simbolo s)
+    {
+        if(!e.tipo.equals(s.tipo))
+            return false;
+        if(e.tipo.equals("terminal"))
+            return e.simbolo==s.terminal;
+        return e.simbolo_produccion.equals(s.no_terminal);
+    }
+
+    boolean esDesplazar(int estado_actual,String token)
+    {
+        if(getFilaTerminal(estado_actual,token)==null)
+            return false;
+        return getFilaTerminal(estado_actual,token).tipo.equals("d");
+    }
+
+    boolean esReducir(int estado_actual,String token)
+    {
+        if(getFilaTerminal(estado_actual,token)==null)
+            return false;
+        return getFilaTerminal(estado_actual,token).tipo.equals("r");
+    }
+
+
+    boolean esAceptacion(int estado_actual,String token)
+    {
+        if(getFilaTerminal(estado_actual,token)==null)
+            return false;
+        return getFilaTerminal(estado_actual,token).tipo.equals("a");
+    }
+
+    FilaTerminal getFilaTerminal(int estado_actual,String token)
+    {
+        Fila f_actual=filas.get(estado_actual);
+        for(FilaTerminal ft:f_actual.terminales)
+        {
+            if(ft.terminal.equals(token))
+                return ft;
+        }
+        return null;
+    }
+
+    FilaNoTerminal getFilaNoTerminal(int estado_actual,String token)
+    {
+        Fila f_actual=filas.get(estado_actual);
+        for(FilaNoTerminal fnt:f_actual.no_terminales)
+        {
+            if(fnt.no_terminal.equals(token))
+                return fnt;
+        }
+        return null;
+    }
+
+    ArrayList<Simbolo> getSimbolos(int produccion)
+    {
+        return gramatica.get(produccion).simbolos;
+    }
+
+    String getNombreProduccion(int produccion)
+    {
+        return gramatica.get(produccion).nombre;
+    }
+}
+
+

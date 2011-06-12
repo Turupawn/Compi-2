@@ -33,9 +33,10 @@
 			<Add option="-fexceptions" />
 		</Compiler>
 		<Unit filename="Entrega2.h" />
+		<Unit filename="Entrega3.h" />
 		<Unit filename="Gramatica.h" />
 		<Unit filename="Lexico.h" />
-		<Unit filename="archivo.txt" />
+		<Unit filename="gramatica" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />

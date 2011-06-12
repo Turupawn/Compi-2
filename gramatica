@@ -1,0 +1,11 @@
+terminal PLUS,TIMES,LPAREN,RPAREN,id;
+nonterminal Object E,T,F;
+
+E-> E PLUS T
+	|T;
+
+T-> T TIMES F
+	|F;
+
+F-> id
+	|LPAREN E RPAREN;

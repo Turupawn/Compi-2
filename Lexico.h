@@ -16,11 +16,11 @@ public:
     string archivo;
     vector<Token> tokens;
     vector<string> palabras_reservadas;
-    Lexico(string path)
+    Lexico(char* path)
     {
         archivo="";
         ifstream read;
-        read.open("archivo.txt",ios::in | ios::binary);
+        read.open(path,ios::in | ios::binary);
         if(!read)
         cout<<"Can't read the file";
         while(read)
