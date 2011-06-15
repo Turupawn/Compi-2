@@ -1,11 +1,4 @@
-bool contieneCadena(vector<string> lista,string str)
-{
-    bool flag=false;
-    for(int l=0;l<lista.size();l++)
-        if(compararCadenas(lista[l],str))
-            flag=true;
-    return flag;
-}
+
 bool contieneProduccionSinTerminales(vector<Produccion>lista,Produccion produccion)
 {
     bool flag=false;
@@ -13,6 +6,13 @@ bool contieneProduccionSinTerminales(vector<Produccion>lista,Produccion producci
         if(produccion.compararProduccionSinTerminales(lista[l]))
             flag=true;
     return flag;
+}
+int intContieneProduccionSinTerminales(vector<Produccion>lista,Produccion produccion)
+{
+    for(int l=0;l<lista.size();l++)
+        if(produccion.compararProduccionSinTerminales(lista[l]))
+            return l;
+    return -1;
 }
 string toString(int x)
 {
@@ -135,7 +135,8 @@ public:
                     if(compararCadenas(lista_producciones[j].nombre,s_actual.nombre))
                     {
                         Produccion produccion_a_agregar=lista_producciones[j];
-                        if(!contieneProduccionSinTerminales(nodo.producciones,produccion_a_agregar))
+                        int pos_prod=intContieneProduccionSinTerminales(nodo.producciones,produccion_a_agregar);
+                        if(pos_prod==-1)
                         {
                             int x=look_ahead_padre.size();
                             for(int k=0;k<x;k++)//agregacion de cada uno si no existe
@@ -161,6 +162,20 @@ public:
                                     produccion_a_agregar.set_no_terminales.push_back(p_actual.set_no_terminales[k]);
                             }
                             nodo.agregarProduccion(produccion_a_agregar);
+                        }else
+                        {
+                            //nodo.producciones[pos_prod];
+                            //agregar los los primeros de beta tbn
+                            if(p_actual.posicion+1<p_actual.simbolos.size())
+                            {
+                                string beta=p_actual.simbolos[p_actual.posicion+1].nombre;
+                                vector <string> primero_beta=gramatica.primero(beta);
+                                for(int k=0;k<primero_beta.size();k++)
+                                {
+                                    if(!contieneCadena(nodo.producciones[pos_prod].set_no_terminales,primero_beta[k]))
+                                        nodo.producciones[pos_prod].set_no_terminales.push_back(primero_beta[k]);
+                                }
+                            }
                         }
                     }
                 }

@@ -33,6 +33,25 @@ public:
     vector<FilaTerminal> terminales;
     vector<FilaNoTerminal> no_terminales;
 };
+
+bool filaTerminalContieneNombre(Fila fila,string nombre)
+{
+    bool existe=false;
+    for(int k=0;k<fila.terminales.size();k++)
+        if(compararCadenas(nombre,fila.terminales[k].terminal))
+            return true;
+    return false;
+}
+
+bool filaNoTerminalContieneNombre(Fila fila,string nombre)
+{
+    bool existe=false;
+    for(int k=0;k<fila.no_terminales.size();k++)
+        if(compararCadenas(nombre,fila.no_terminales[k].no_terminal))
+            return true;
+    return false;
+}
+
 class Tabla
 {
 public:
@@ -55,29 +74,32 @@ public:
         for(int i=0;i<lista_nodos.size();i++)//for each nodo
         {
             filas.push_back(Fila());//agrego una fila
+            //Ciclo de agregaciones de desplazares
             for(int j=0;j<lista_nodos[i].producciones.size();j++)//for each produccion del nodo actual
             {
                 Produccion p_actual=lista_nodos[i].producciones[j];
                 if(p_actual.posicion<p_actual.simbolos.size())//si no estoy al final la produccion
                 {
                     if(compararCadenas(p_actual.getSimboloActual().tipo,"terminal"))//agregacion
-                    {
-                        bool existe=false;
-                        for(int k=0;k<filas[i].terminales.size();k++)
-                            if(compararCadenas(p_actual.getSimboloActual().nombre,filas[i].terminales[k].terminal))
-                                existe=true;
-                        if(!existe)
+                        if(!filaTerminalContieneNombre(filas[i],p_actual.getSimboloActual().nombre))
                             filas[i].terminales.push_back(FilaTerminal(p_actual.getSimboloActual().nombre,"d",getNumeroNodo(p_actual)));
-                    }
                     if(compararCadenas(p_actual.getSimboloActual().tipo,"no terminal"))//agregacion
-                        filas[i].no_terminales.push_back(FilaNoTerminal(p_actual.getSimboloActual().nombre,getNumeroNodo(p_actual)));
-                }else//si estoy al final de la produccion
+                        if(!filaNoTerminalContieneNombre(filas[i],p_actual.getSimboloActual().nombre))
+                            filas[i].no_terminales.push_back(FilaNoTerminal(p_actual.getSimboloActual().nombre,getNumeroNodo(p_actual)));
+                }
+            }
+            //Ciclo de agregaciones de reducires y aceptares
+            for(int j=0;j<lista_nodos[i].producciones.size();j++)//for each produccion del nodo actual
+            {
+                Produccion p_actual=lista_nodos[i].producciones[j];
+                if(p_actual.posicion==p_actual.simbolos.size())//si estoy al final la produccion
                 {
                     if(p_actual.nombre[0]=='p'&&p_actual.nombre[1]=='r'&&p_actual.nombre[2]=='i'&&p_actual.nombre[3]=='m'&&p_actual.nombre[4]=='a'&&p_actual.nombre[5]=='_')//agregacion
                         filas[i].terminales.push_back(FilaTerminal("$","a",-1));
                     else
                         for(int k=0;k<p_actual.set_no_terminales.size();k++)//agregacion
-                            filas[i].terminales.push_back(FilaTerminal(p_actual.set_no_terminales[k],"r",getNumeroProduccion(p_actual)));
+                            if(!filaTerminalContieneNombre(filas[i],p_actual.set_no_terminales[k]))
+                                filas[i].terminales.push_back(FilaTerminal(p_actual.set_no_terminales[k],"r",getNumeroProduccion(p_actual)));
                 }
             }
         }
@@ -169,10 +191,10 @@ public:
         for(int i=0;i<lista_nodos.size();i++)
         {
             Nodo n_actual=lista_nodos[i];
-            if(n_actual.producciones[0].compararProduccionSinTerminales(produccion))//!!!!
+            if(n_actual.producciones[0].compararProduccionContieneTerminales(produccion))//!!!!
                 return i;
             if(n_actual.producciones.size()>1)
-            if(n_actual.producciones[1].compararProduccionSinTerminales(produccion))//!!!!
+            if(n_actual.producciones[1].compararProduccionContieneTerminales(produccion))//!!!!
                 return i;
             /*
             for(int j=0;j<n_actual.producciones.size();j++)

@@ -15,6 +15,22 @@ bool compararCadenas(string str1,string str2)
     }
     return true;
 }
+bool contieneCadena(vector<string> lista,string str)
+{
+    bool flag=false;
+    for(int l=0;l<lista.size();l++)
+        if(compararCadenas(lista[l],str))
+            flag=true;
+    return flag;
+}
+
+int intContieneCadena(vector<string> lista,string str)
+{
+    for(int l=0;l<lista.size();l++)
+        if(compararCadenas(lista[l],str))
+            return l;
+    return -1;
+}
 
 class Terminal
 {
@@ -57,13 +73,11 @@ public:
     int posicion;
     string nombre;
     bool procesado;
-    int ir_a_nodo;
     Produccion(string nombre)
     {
         this->nombre=nombre;
         posicion=0;
         procesado=false;
-        ir_a_nodo=-1;
     }
     bool compararProduccion(Produccion pb)
     {
@@ -78,6 +92,24 @@ public:
         for(int i=0;i<pa.set_no_terminales.size();i++)
             if(!compararCadenas(pa.set_no_terminales[i],pb.set_no_terminales[i]))
                 return false;
+        return pa.posicion==pb.posicion;
+    }
+    bool compararProduccionContieneTerminales(Produccion pb)
+    {
+        Produccion pa=*this;
+        if(pa.simbolos.size()!=pb.simbolos.size())
+            return false;
+        if(pa.set_no_terminales.size()<pb.set_no_terminales.size())
+            return false;
+        for(int i=0;i<pa.simbolos.size();i++)
+            if(!compararCadenas(pa.simbolos[i].nombre,pb.simbolos[i].nombre))
+                return false;
+
+        for(int i=0;i<pb.set_no_terminales.size();i++)
+        {
+            if(!contieneCadena(pa.set_no_terminales,pb.set_no_terminales[i]))
+                return false;
+        }
         return pa.posicion==pb.posicion;
     }
     bool compararProduccionSinTerminales(Produccion pb)
@@ -119,7 +151,7 @@ public:
         cout<<"{";
         for(int i=0;i<set_no_terminales.size();i++)
             cout<<set_no_terminales[i]<<",";
-        cout<<"}  ir a:"<<ir_a_nodo;
+        cout<<"}";
 
         cout<<endl;
     }
@@ -137,6 +169,70 @@ public:
 
     vector<Token> tokens;
     int i;
+    void printPrimeros()
+    {
+        vector<string> simbolos;
+        vector< vector<string> > first;
+        for(int i=0;i<terminales.size();i++)
+            simbolos.push_back(terminales[i].nombre);
+        for(int i=0;i<no_terminales.size();i++)
+            simbolos.push_back(no_terminales[i].nombre);
+
+        //inicio
+        //for each x ∈ T, FIRST(x) ← {x}
+        //for each A ∈ NT, FIRST(A) ← Ø
+        for(int i=0;i<simbolos.size();i++)
+        {
+            vector<string> lista_vacia;
+            first.push_back(lista_vacia);
+        }
+        for(int i=0;i<simbolos.size();i++)
+            if(existeTerminal(simbolos[i]))
+            {
+                first[i].push_back(simbolos[i]);
+            }
+        //while (FIRST sets are still changing)
+        bool cambiando=false;
+        do
+        {
+            //For each p ∈ P, of the form A→β,
+            for(int i=0;i<lista_producciones.size();i++)
+            {
+                //if β is ε then
+                if(lista_producciones[i].simbolos.size()==0)
+                {
+                    //FIRST(A) ← FIRST(A) ∪ { ε }
+                    first[intContieneCadena(simbolos,lista_producciones[i].nombre)].push_back("epsilon");
+                }
+                //else if β is B1B2...Bk then begin
+                else
+                {
+                    //FIRST(A) ← FIRST(A) ∪ ( FIRST(B1) – { ε } )
+                    for(int j=0;j<first[intContieneCadena(simbolos,lista_producciones[i].simbolos[0].nombre)].size();j++)
+                        if(!compararCadenas(first[intContieneCadena(simbolos,lista_producciones[i].simbolos[0].nombre)][j],"epsilon"))
+                            first[intContieneCadena(simbolos,lista_producciones[i].nombre)].push_back(first[intContieneCadena(simbolos,lista_producciones[i].simbolos[0].nombre)][j]);
+                    //for i ← 1 to k–1 by 1 while ε ∈ FIRST(Bi )
+                    for(int j=0;j<lista_producciones[i].simbolos.size();j++)
+                    {
+                        if(!contieneCadena(first[intContieneCadena(simbolos,lista_producciones[i].simbolos[j])],"epsilon"))
+                            break;
+                        //FIRST(A) ← FIRST(A) ∪ ( FIRST(Bi +1) – { ε } )
+                        //for(int k=0;k<first[intContieneCadena(simbolos,lista_producciones[i].simbolos[j])])
+                    }
+                }
+                lista_producciones[i].print();
+            }
+            break;
+        }while(!cambiando);
+        //print
+        for(int i=0;i<simbolos.size();i++)
+        {
+            cout<<simbolos[i]<<": ";
+            for(int j=0;j<first[i].size();j++)
+                cout<<first[i][j]<<",";
+            cout<<endl;
+        }
+    }
     bool compararToken(string tipo,string lexema)
     {
         i++;
