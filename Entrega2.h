@@ -59,11 +59,19 @@ public:
         for(int i=0;i<producciones.size();i++)
             getProduccion(i).print();
     }
+    string getString()
+    {
+        string res="";
+        for(int i=0;i<producciones.size();i++)
+            res+=getProduccion(i).getString();
+        return res;
+    }
     bool existe(vector<Nodo> nodos)
     {
         for(int i=0;i<nodos.size();i++)
-            if(producciones[0].compararProduccion(nodos[i].producciones[0]))
-                return true;
+            if(producciones.size()>0 && nodos[i].producciones.size()>0)
+                if(producciones[0].compararProduccion(nodos[i].producciones[0]))
+                    return true;
         return false;
     }
     int intExisteSinPrimeros(vector<Nodo> nodos)
@@ -92,25 +100,6 @@ public:
         //generar nodos
         generarNodos();
     }
-    vector<string> getListaPrimeros(Produccion produccion,vector<string> lista_anterior)
-    {
-        vector<string> primeros;
-        if(produccion.posicion+1>=produccion.simbolos.size())
-        {
-            if(lista_anterior.size()==0)//!!!!!!!!!!!!!!
-              lista_anterior.push_back("$");
-            return lista_anterior;
-        }
-        else
-        {
-            vector<string> temp=gramatica.primero(produccion.simbolos[produccion.posicion+1].nombre);
-            for(int j=0;j<temp.size();j++)
-            {
-                primeros.push_back(temp[j]);
-            }
-        }
-        return primeros;
-    }
     Nodo getNodo(Produccion produccion,string nombre)
     {
         vector<string> look_ahead_padre=produccion.set_no_terminales;
@@ -123,10 +112,11 @@ public:
         //Validacion de fin de posicion
         if(p_incial.simbolos.size()<=p_incial.posicion)
             return nodo;
-
         for(int i=0;i<nodo.producciones.size();i++)//for each produccion del nodo
         {
             Produccion p_actual=nodo.producciones[i];
+            if(p_actual.simbolos.size()==0)
+                continue;
             Simbolo s_actual=p_actual.getSimboloActual();
             if(s_actual.tipo=="no terminal")//para cada no terminal
             {
@@ -148,7 +138,8 @@ public:
                             if(p_actual.posicion+1<p_actual.simbolos.size())
                             {
                                 string beta=p_actual.simbolos[p_actual.posicion+1].nombre;
-                                vector <string> primero_beta=gramatica.primero(beta);
+                                //vector <string> primero_beta=gramatica.primero(beta);
+                                vector <string> primero_beta=gramatica.getFirst(beta);
                                 for(int k=0;k<primero_beta.size();k++)
                                 {
                                     if(!contieneCadena(produccion_a_agregar.set_no_terminales,primero_beta[k]))
@@ -169,7 +160,8 @@ public:
                             if(p_actual.posicion+1<p_actual.simbolos.size())
                             {
                                 string beta=p_actual.simbolos[p_actual.posicion+1].nombre;
-                                vector <string> primero_beta=gramatica.primero(beta);
+                                //vector <string> primero_beta=gramatica.primero(beta);
+                                vector <string> primero_beta=gramatica.getFirst(beta);
                                 for(int k=0;k<primero_beta.size();k++)
                                 {
                                     if(!contieneCadena(nodo.producciones[pos_prod].set_no_terminales,primero_beta[k]))
@@ -212,21 +204,23 @@ public:
                             for(int k=0;k<n_temp2.producciones.size();k++)//agrego las producciones/set_no_terminales del temporar al actual
                             {
                                 bool flag=false;
-                                for(int l=0;l<n_temp2.producciones.size();l++)
+                                for(int l=0;l<n_temp.producciones.size();l++)
                                     if(n_temp.producciones[l].compararProduccionSinTerminales(n_temp2.producciones[k]))//caso set no terminales
                                     {
-                                        for(int m=0;m<n_temp2.producciones[l].set_no_terminales.size();m++)
-                                            n_temp.producciones[l].set_no_terminales.push_back(n_temp2.producciones[l].set_no_terminales[m]);
+                                        for(int m=0;m<n_temp.producciones[l].set_no_terminales.size();m++)
+                                            n_temp.producciones[l].set_no_terminales.push_back(n_temp2.producciones[k].set_no_terminales[m]);
                                         flag=true;
                                         break;
                                     }
+
                                 if(!flag)//caso agrego completo
                                     n_temp.producciones.push_back(n_temp2.producciones[k]);
                             }
                         }
                     }
                 }//fin agregar repetidos
-                nodos.push_back(n_temp);
+                if(!n_temp.existe(lista_nodos) && n_temp.producciones.size()>0 && !n_temp.existe(nodos))
+                    nodos.push_back(n_temp);
             }
         }
         return nodos;
@@ -239,6 +233,7 @@ public:
             bool flag=false;
             Nodo n_actual=nodos[i];
             for(int j=0;j<resultado.size();j++)//lo busco versus los agregados en resultado
+                if(n_actual.producciones.size()>0&&resultado[j].producciones.size()>0)
                 if(n_actual.producciones[0].compararProduccionSinTerminales(resultado[j].producciones[0]) && j!=i)//si encuentro uno igual sin los look ahead
                 {
                     flag=true;//marco flag q encontre para no pushearlo a resultado y...
@@ -247,6 +242,8 @@ public:
                         Produccion p_actual=n_actual.producciones[k];
                         for(int l=0;l<p_actual.set_no_terminales.size();l++)
                         {
+                            if(resultado[j].producciones.size()<=k)
+                                break;
                             string la_actual=p_actual.set_no_terminales[l];
                             if(!contieneCadena(resultado[j].producciones[k].set_no_terminales,la_actual))
                                 resultado[j].producciones[k].set_no_terminales.push_back(la_actual);
@@ -272,6 +269,11 @@ public:
         for(int x=0;x<lista_nodos.size();x++)
         {
             vector<Nodo> n_temp=procesarNodo(lista_nodos[x]);//get nodo a procesar
+            //n_temp[0].print();
+            //while ( getchar() != '\n');
+            cout<<x<<endl;
+            cout.flush();
+
             for(int i=0;i<n_temp.size();i++)//para cada nodo
                 if(n_temp[i].producciones.size()>0)//si no esta vacio
                     if(!n_temp[i].existe(lista_nodos))//si no esta repetido

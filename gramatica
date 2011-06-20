@@ -1,5 +1,7 @@
-nonterminal Object C,S;
-terminal c,d;
-S->C C;
-C->c C
-    |d;
+nonterminal Object S,A,B;
+terminal x,b,a;
+S->A
+     | x b;
+A-> a A b
+     |B;
+B->x;

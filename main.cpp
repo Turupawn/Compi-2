@@ -17,6 +17,7 @@ int main()
     lexico.generarTokens();
     //lexico.printTokens();
     Gramatica gramatica(lexico);
+    gramatica.printFirst();
     //cout<<"String import: "<<gramatica.string_import<<endl;
     //cout<<"String parse_code: "<<gramatica.string_parser_code<<endl;
     //cout<<"String class: "<<gramatica.string_class<<endl;
@@ -34,6 +35,7 @@ int main()
     tabla.escribirParser();
     cout<<endl<<"Escribiendo en el archivo MiParser.java"<<endl;
     cout<<"Procedimiento terminado con exito"<<endl;
+    tabla.escribirAutomata();
 
 
 cout<<"      ___                       ___           ___           ___   "<<endl;
@@ -47,7 +49,7 @@ cout<<"  \\  \\:\\           \\__\\::/  \\  \\:\\  /:/   \\  \\:\\  /:/   \\  \\
 cout<<"   \\  \\:\\          /__/:/    \\  \\:\\/:/     \\  \\:\\/:/     \\  \\:\\   "<<endl;
 cout<<"    \\  \\:\\         \\__\\/      \\  \\::/       \\  \\::/       \\  \\:\\  "<<endl;
 cout<<"     \\__\\/                     \\__\\/         \\__\\/         \\__\\/  2.0"<<endl;
-gramatica.printPrimeros();
+
 
 /*
 

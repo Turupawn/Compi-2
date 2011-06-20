@@ -7,16 +7,16 @@
 	<File name="Entrega3.h" open="1" top="0" tabpos="5">
 		<Cursor position="7019" topLine="176" />
 	</File>
-	<File name="Gramatica.h" open="1" top="1" tabpos="3">
-		<Cursor position="6447" topLine="206" />
+	<File name="Gramatica.h" open="1" top="0" tabpos="3">
+		<Cursor position="21029" topLine="671" />
 	</File>
 	<File name="Lexico.h" open="1" top="0" tabpos="2">
-		<Cursor position="9095" topLine="183" />
+		<Cursor position="9095" topLine="51" />
 	</File>
-	<File name="gramatica" open="1" top="0" tabpos="6">
-		<Cursor position="60" topLine="0" />
+	<File name="gramatica" open="1" top="1" tabpos="6">
+		<Cursor position="2584" topLine="59" />
 	</File>
 	<File name="main.cpp" open="1" top="0" tabpos="1">
-		<Cursor position="2327" topLine="39" />
+		<Cursor position="460" topLine="5" />
 	</File>
 </CodeBlocks_layout_file>

@@ -53,6 +53,7 @@ class ElementoPila
     int nodo;
     String simbolo_produccion;
     String tipo;
+    Object valor;
 
     public ElementoPila(int simbolo, int nodo)
     {
@@ -64,6 +65,13 @@ class ElementoPila
     {
         this.simbolo_produccion = simbolo_produccion;
         this.nodo = nodo;
+        tipo="no terminal";
+    }
+    public ElementoPila(String simbolo_produccion, int nodo,Object valor)
+    {
+        this.simbolo_produccion = simbolo_produccion;
+        this.nodo = nodo;
+        this.valor=valor;
         tipo="no terminal";
     }
     public void print()

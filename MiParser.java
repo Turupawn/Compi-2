@@ -53,6 +53,7 @@ class ElementoPila
     int nodo;
     String simbolo_produccion;
     String tipo;
+    Object valor;
 
     public ElementoPila(int simbolo, int nodo)
     {
@@ -64,6 +65,13 @@ class ElementoPila
     {
         this.simbolo_produccion = simbolo_produccion;
         this.nodo = nodo;
+        tipo="no terminal";
+    }
+    public ElementoPila(String simbolo_produccion, int nodo,Object valor)
+    {
+        this.simbolo_produccion = simbolo_produccion;
+        this.nodo = nodo;
+        this.valor=valor;
         tipo="no terminal";
     }
     public void print()
@@ -155,52 +163,108 @@ Produccion produccion0=new Produccion("prima_S");
 produccion0.simbolos.add(new Simbolo("S"));
 gramatica.add(produccion0);
 Produccion produccion1=new Produccion("S");
-produccion1.simbolos.add(new Simbolo("C"));
-produccion1.simbolos.add(new Simbolo("C"));
+produccion1.simbolos.add(new Simbolo("A"));
 gramatica.add(produccion1);
-Produccion produccion2=new Produccion("C");
-produccion2.simbolos.add(new Simbolo("c"));
-produccion2.simbolos.add(new Simbolo("C"));
+Produccion produccion2=new Produccion("S");
+produccion2.simbolos.add(new Simbolo("x"));
+produccion2.simbolos.add(new Simbolo("b"));
 gramatica.add(produccion2);
-Produccion produccion3=new Produccion("C");
-produccion3.simbolos.add(new Simbolo("d"));
+Produccion produccion3=new Produccion("A");
+produccion3.simbolos.add(new Simbolo("a"));
+produccion3.simbolos.add(new Simbolo("A"));
+produccion3.simbolos.add(new Simbolo("b"));
 gramatica.add(produccion3);
+Produccion produccion4=new Produccion("A");
+produccion4.simbolos.add(new Simbolo("B"));
+gramatica.add(produccion4);
+Produccion produccion5=new Produccion("B");
+produccion5.simbolos.add(new Simbolo("x"));
+gramatica.add(produccion5);
 
 
 Fila fila0=new Fila();
-fila0.terminales.add(new FilaTerminal("c", "d",3));
-fila0.terminales.add(new FilaTerminal("d", "d",4));
+fila0.terminales.add(new FilaTerminal("x", "d",3));
+fila0.terminales.add(new FilaTerminal("a", "d",4));
 fila0.no_terminales.add(new FilaNoTerminal("S",1));
-fila0.no_terminales.add(new FilaNoTerminal("C",2));
+fila0.no_terminales.add(new FilaNoTerminal("A",2));
+fila0.no_terminales.add(new FilaNoTerminal("B",5));
 filas.add(fila0);
 Fila fila1=new Fila();
 fila1.terminales.add(new FilaTerminal("$", "a",-1));
 filas.add(fila1);
 Fila fila2=new Fila();
-fila2.terminales.add(new FilaTerminal("c", "d",3));
-fila2.terminales.add(new FilaTerminal("d", "d",4));
-fila2.no_terminales.add(new FilaNoTerminal("C",5));
+fila2.terminales.add(new FilaTerminal("$", "r",1));
 filas.add(fila2);
 Fila fila3=new Fila();
-fila3.terminales.add(new FilaTerminal("c", "d",3));
-fila3.terminales.add(new FilaTerminal("d", "d",4));
-fila3.no_terminales.add(new FilaNoTerminal("C",6));
+fila3.terminales.add(new FilaTerminal("b", "d",6));
+fila3.terminales.add(new FilaTerminal("$", "r",5));
 filas.add(fila3);
 Fila fila4=new Fila();
-fila4.terminales.add(new FilaTerminal("$", "r",3));
-fila4.terminales.add(new FilaTerminal("c", "r",3));
-fila4.terminales.add(new FilaTerminal("d", "r",3));
+fila4.terminales.add(new FilaTerminal("a", "d",4));
+fila4.terminales.add(new FilaTerminal("x", "d",8));
+fila4.no_terminales.add(new FilaNoTerminal("A",7));
+fila4.no_terminales.add(new FilaNoTerminal("B",5));
 filas.add(fila4);
 Fila fila5=new Fila();
-fila5.terminales.add(new FilaTerminal("$", "r",1));
+fila5.terminales.add(new FilaTerminal("$", "r",4));
+fila5.terminales.add(new FilaTerminal("b", "r",4));
 filas.add(fila5);
 Fila fila6=new Fila();
 fila6.terminales.add(new FilaTerminal("$", "r",2));
-fila6.terminales.add(new FilaTerminal("c", "r",2));
-fila6.terminales.add(new FilaTerminal("d", "r",2));
 filas.add(fila6);
+Fila fila7=new Fila();
+fila7.terminales.add(new FilaTerminal("b", "d",9));
+filas.add(fila7);
+Fila fila8=new Fila();
+fila8.terminales.add(new FilaTerminal("$", "r",5));
+fila8.terminales.add(new FilaTerminal("b", "r",5));
+filas.add(fila8);
+Fila fila9=new Fila();
+fila9.terminales.add(new FilaTerminal("$", "r",3));
+fila9.terminales.add(new FilaTerminal("b", "r",3));
+filas.add(fila9);
+Object ejecutarProduccion(int numero,ArrayList<Object> valores_pops)
+{
+ArrayList<Object> dolar=new ArrayList<Object>();
+for(int i=valores_pops.size()-1;i>=0;i--)
+{
+dolar.add(valores_pops.get(i));
+}
+if(numero==1)
+{
+System.out.println(numero);
+return numero;
+}
+if(numero==2)
+{
+System.out.println(numero);
+return numero;
+}
+if(numero==3)
+{
+System.out.println(numero);
+return numero;
+}
+if(numero==4)
+{
+System.out.println(numero);
+return numero;
+}
+if(numero==5)
+{
+System.out.println(numero);
+return numero;
+}
+if(numero==6)
+{
+System.out.println(numero);
+return numero;
+}
+return null;
+}
 
     }
+
     void print()
     {
         for(Fila f : filas)
@@ -228,7 +292,7 @@ filas.add(fila6);
         {
             if(esDesplazar(fila_actual, token))
             {
-                pila.push(new ElementoPila(token, getFilaTerminal(fila_actual, token).nodo));//push
+                pila.push(new ElementoPila(token, getFilaTerminal(fila_actual, token).nodo,token));//push
                 fila_actual=getFilaTerminal(fila_actual, token).nodo;//desplazar
                 token=lista_tokens.nextToken();//consumir token
             }else if(esReducir(fila_actual, token))
@@ -236,22 +300,24 @@ filas.add(fila6);
                 //Popear la pila
                 int numero_produccion=getFilaTerminal(fila_actual, token).nodo;
                 ArrayList<Simbolo>simbolos=getSimbolos(numero_produccion);
+
+                ArrayList<Object>valores_pops=new ArrayList<Object>();
                 for(int i=simbolos.size()-1;i>=0;i--)
                 {
                     ElementoPila e=pila.pop();
+                    valores_pops.add(e.valor);
                     if(!compararPilaSimbolo(e,simbolos.get(i)))
                         return false;
                 }
+                
                 //get variables necesarias
                 String nombre_produccion=getNombreProduccion(numero_produccion);
                 int pos=pila.elementos.get(pila.elementos.size()-1).nodo;
                 int get_desplazamiento=getFilaNoTerminal(pos, nombre_produccion).nodo;
                 //pushear
-                pila.push(new ElementoPila(nombre_produccion, get_desplazamiento));
+                pila.push(new ElementoPila(nombre_produccion, get_desplazamiento,ejecutarProduccion(numero_produccion,valores_pops)));
                 //desplazo
                 fila_actual=get_desplazamiento;
-
-                int x=10;
             }else if(esAceptacion(fila_actual, token))
             {
                 return true;
@@ -327,5 +393,6 @@ filas.add(fila6);
         return gramatica.get(produccion).nombre;
     }
 }
+
 
 

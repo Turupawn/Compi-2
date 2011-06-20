@@ -155,6 +155,27 @@ public:
 
         cout<<endl;
     }
+    string getString()
+    {
+        string res="";
+        res+=nombre+"->";
+        for(int i=0;i<simbolos.size();i++)
+        {
+            res+=" ";
+            if(posicion==i)
+                res+=".";
+            res+=simbolos[i].nombre;
+        }
+        if(posicion==simbolos.size())
+            res+=".";
+        res+="{";
+        for(int i=0;i<set_no_terminales.size();i++)
+            res+=set_no_terminales[i]+",";
+        res+="}";
+
+        res+="\n";
+        return res;
+    }
 
 };
 
@@ -168,11 +189,24 @@ public:
     string string_import,string_parser_code,string_class;
 
     vector<Token> tokens;
+    vector< vector<string> > first;
+    vector<string> simbolos;
     int i;
-    void printPrimeros()
+    bool agregarAFirst(string simbolo,string a_agregar)
     {
-        vector<string> simbolos;
-        vector< vector<string> > first;
+        if(!contieneCadena(first[intContieneCadena(simbolos,simbolo)],a_agregar))
+        {
+            first[intContieneCadena(simbolos,simbolo)].push_back(a_agregar);
+            return true;
+        }
+        return false;
+    }
+    vector<string> getFirst(string simbolo)
+    {
+        return first[intContieneCadena(simbolos,simbolo)];
+    }
+    void procesarPrimeros()
+    {
         for(int i=0;i<terminales.size();i++)
             simbolos.push_back(terminales[i].nombre);
         for(int i=0;i<no_terminales.size();i++)
@@ -192,39 +226,53 @@ public:
                 first[i].push_back(simbolos[i]);
             }
         //while (FIRST sets are still changing)
-        bool cambiando=false;
+        bool cambiado;
         do
         {
-            //For each p ∈ P, of the form A→β,
-            for(int i=0;i<lista_producciones.size();i++)
+            cambiado=false;
+            for(int i=0;i<lista_producciones.size();i++)//for each p ∈ P, of the form A→β,
             {
-                //if β is ε then
-                if(lista_producciones[i].simbolos.size()==0)
+                Produccion p=lista_producciones[i];
+                string A=p.nombre;
+                if(p.simbolos.size()==0)//if β is ε then
                 {
-                    //FIRST(A) ← FIRST(A) ∪ { ε }
-                    first[intContieneCadena(simbolos,lista_producciones[i].nombre)].push_back("epsilon");
+                    if(agregarAFirst(A,"epsilon"))//FIRST(A) ← FIRST(A) ∪ { ε }
+                        cambiado=true;
                 }
-                //else if β is B1B2...Bk then begin
                 else
                 {
                     //FIRST(A) ← FIRST(A) ∪ ( FIRST(B1) – { ε } )
-                    for(int j=0;j<first[intContieneCadena(simbolos,lista_producciones[i].simbolos[0].nombre)].size();j++)
-                        if(!compararCadenas(first[intContieneCadena(simbolos,lista_producciones[i].simbolos[0].nombre)][j],"epsilon"))
-                            first[intContieneCadena(simbolos,lista_producciones[i].nombre)].push_back(first[intContieneCadena(simbolos,lista_producciones[i].simbolos[0].nombre)][j]);
+                    string B=p.simbolos[0].nombre;
+                    for(int j=0;j<getFirst(B).size();j++)
+                        if(!compararCadenas(getFirst(B)[j],"epsilon"))
+                            if(agregarAFirst(A,getFirst(B)[j]))
+                                cambiado=true;
                     //for i ← 1 to k–1 by 1 while ε ∈ FIRST(Bi )
-                    for(int j=0;j<lista_producciones[i].simbolos.size();j++)
+                    for(int j=0;j<p.simbolos.size()-1;j++)
                     {
-                        if(!contieneCadena(first[intContieneCadena(simbolos,lista_producciones[i].simbolos[j])],"epsilon"))
+                        string B=p.simbolos[j].nombre;
+                        if(!contieneCadena(getFirst(B),"epsilon"))
                             break;
+
                         //FIRST(A) ← FIRST(A) ∪ ( FIRST(Bi +1) – { ε } )
-                        //for(int k=0;k<first[intContieneCadena(simbolos,lista_producciones[i].simbolos[j])])
+                        string Bsig=p.simbolos[j+1].nombre;
+                        for(int k=0;k<getFirst(Bsig).size();k++)
+                            if(!compararCadenas(getFirst(Bsig)[k],"epsilon"))
+                                if(agregarAFirst(A,getFirst(Bsig)[k]))
+                                    cambiado=true;
+
+                        //if i = k–1 and ε ∈ FIRST(Bk)
+                        if(j==p.simbolos.size()-2 && contieneCadena(getFirst(Bsig),"epsilon"))
+                            if(agregarAFirst(A,"epsilon"))
+                                cambiado=true;
                     }
+
                 }
-                lista_producciones[i].print();
             }
-            break;
-        }while(!cambiando);
-        //print
+        }while(cambiado);
+    }
+    void printFirst()
+    {
         for(int i=0;i<simbolos.size();i++)
         {
             cout<<simbolos[i]<<": ";
@@ -273,6 +321,7 @@ public:
         }
         else
             cout<<"Gramatica incorrecta"<<endl;
+        procesarPrimeros();
     }
     bool s()
     {
@@ -627,32 +676,5 @@ public:
         }
         return true;
 
-    }
-    vector<string> primero(string produccion)
-    {
-        vector <string> resultado;
-        if(!existeNoTerminal(produccion))//si es terminal solo se mete el mismo
-        {
-            resultado.push_back(produccion);
-            return resultado;
-        }
-        for(int i=0;i<lista_producciones.size();i++)//para cada produccion
-        {
-            if(compararCadenas(lista_producciones[i].nombre,produccion))
-                if(lista_producciones[i].simbolos.size()!=0)
-                    if(compararCadenas(lista_producciones[i].simbolos[0].tipo,"terminal"))
-                    {
-                        resultado.push_back(lista_producciones[i].simbolos[0].nombre);
-                    }
-                    else
-                    {
-                        vector<string> temp=primero(lista_producciones[i].simbolos[0].nombre);
-                        for(int _i=0;_i<temp.size();_i++)
-                            resultado.push_back(temp[_i]);
-                    }
-                else
-                    resultado.push_back("E");
-        }
-        return resultado;
     }
 };

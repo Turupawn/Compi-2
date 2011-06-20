@@ -1,5 +1,5 @@
 
-    }
+
     void print()
     {
         for(Fila f : filas)
@@ -27,7 +27,7 @@
         {
             if(esDesplazar(fila_actual, token))
             {
-                pila.push(new ElementoPila(token, getFilaTerminal(fila_actual, token).nodo));//push
+                pila.push(new ElementoPila(token, getFilaTerminal(fila_actual, token).nodo,token));//push
                 fila_actual=getFilaTerminal(fila_actual, token).nodo;//desplazar
                 token=lista_tokens.nextToken();//consumir token
             }else if(esReducir(fila_actual, token))
@@ -35,22 +35,24 @@
                 //Popear la pila
                 int numero_produccion=getFilaTerminal(fila_actual, token).nodo;
                 ArrayList<Simbolo>simbolos=getSimbolos(numero_produccion);
+
+                ArrayList<Object>valores_pops=new ArrayList<Object>();
                 for(int i=simbolos.size()-1;i>=0;i--)
                 {
                     ElementoPila e=pila.pop();
+                    valores_pops.add(e.valor);
                     if(!compararPilaSimbolo(e,simbolos.get(i)))
                         return false;
                 }
+                
                 //get variables necesarias
                 String nombre_produccion=getNombreProduccion(numero_produccion);
                 int pos=pila.elementos.get(pila.elementos.size()-1).nodo;
                 int get_desplazamiento=getFilaNoTerminal(pos, nombre_produccion).nodo;
                 //pushear
-                pila.push(new ElementoPila(nombre_produccion, get_desplazamiento));
+                pila.push(new ElementoPila(nombre_produccion, get_desplazamiento,ejecutarProduccion(numero_produccion,valores_pops)));
                 //desplazo
                 fila_actual=get_desplazamiento;
-
-                int x=10;
             }else if(esAceptacion(fila_actual, token))
             {
                 return true;
@@ -126,5 +128,6 @@
         return gramatica.get(produccion).nombre;
     }
 }
+
 
 

@@ -136,7 +136,6 @@ public:
         ofstream myfile;
         myfile.open ("MiParser.java");
 
-
         //lectura parte1
         ifstream f("Auxiliar1", ifstream::in);
         std::stringstream buffer;
@@ -172,6 +171,26 @@ public:
             }
             myfile<<"filas.add(fila"<<i<<");"<<endl;
         }
+        myfile<<"}"<<endl;
+
+        //escritura de funciones de pila
+        myfile<<"Object ejecutarProduccion(int numero,ArrayList<Object> valores_pops)"<<endl;
+        myfile<<"{"<<endl;
+            myfile<<"ArrayList<Object> dolar=new ArrayList<Object>();"<<endl;
+            myfile<<"for(int i=valores_pops.size()-1;i>=0;i--)"<<endl;
+            myfile<<"{"<<endl;
+                myfile<<"dolar.add(valores_pops.get(i));"<<endl;
+            myfile<<"}"<<endl;
+        for(int i=1;i<=lista_producciones.size();i++)
+        {
+            myfile<<"if(numero=="<<i<<")"<<endl;
+            myfile<<"{"<<endl;
+                myfile<<"System.out.println(numero);"<<endl;
+            myfile<<"return numero;"<<endl;
+            myfile<<"}"<<endl;
+        }
+            myfile<<"return null;"<<endl;
+        myfile<<"}"<<endl;
 
         //lectura parte2
         ifstream f2("Auxiliar2", ifstream::in);
@@ -183,6 +202,48 @@ public:
         f.close();
         f2.close();
         myfile.close();
+    }
+
+    void escribirAutomata()
+    {
+        ofstream myfile;
+        myfile.open ("Automata", ofstream::out | ofstream::trunc);
+        for(int i=0;i<lista_nodos.size();i++)
+        {
+            string temp_f=lista_nodos[i].getString()+"#";
+            myfile<<"%i"<<i<<endl;
+            for(int i=0;temp_f[i]!='#';i++)
+            {
+                if(temp_f[i]!='\0')
+                    myfile<<temp_f[i];
+            }
+        }
+        myfile<<"@"<<endl;
+        for(int i=0;i<filas.size();i++)
+        {
+            for(int j=0;j<filas[i].terminales.size();j++)
+            {
+                if(compararCadenas(filas[i].terminales[j].tipo,"d"))
+                {
+                    myfile<<i<<"%";
+                    string s_temp=filas[i].terminales[j].terminal;
+                    for(int k=0;filas[i].terminales[j].terminal[k]!='\0';k++)
+                        myfile<<filas[i].terminales[j].terminal[k];
+                    myfile<<"%"<<filas[i].terminales[j].nodo<<endl;
+                }
+            }
+        }
+
+        for(int i=0;i<filas.size();i++)
+        {
+            for(int j=0;j<filas[i].no_terminales.size();j++)
+            {
+                myfile<<i<<"%";
+                for(int k=0;filas[i].no_terminales[j].no_terminal[k]!='\0';k++)
+                    myfile<<filas[i].no_terminales[j].no_terminal[k];
+                myfile<<"%"<<filas[i].no_terminales[j].nodo<<endl;
+            }
+        }
     }
 
     int getNumeroNodo(Produccion produccion)

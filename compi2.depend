@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1307993756 source:/home/userr/GitProyects/compi2/main.cpp
+1308557491 source:/home/userr/GitProyects/compi2/main.cpp
 	<iostream>
 	<fstream>
 	<vector>
@@ -12,10 +12,10 @@
 
 1306866161 /home/userr/GitProyects/compi2/Lexico.h
 
-1308020945 /home/userr/GitProyects/compi2/Gramatica.h
+1308561025 /home/userr/GitProyects/compi2/Gramatica.h
 
-1307873607 /home/userr/GitProyects/compi2/Entrega2.h
+1308594224 /home/userr/GitProyects/compi2/Entrega2.h
 
-1307873212 /home/userr/GitProyects/compi2/Entrega3.h
+1308597187 /home/userr/GitProyects/compi2/Entrega3.h
 	"Entrega2.h"
 
