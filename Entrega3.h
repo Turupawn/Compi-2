@@ -1,4 +1,7 @@
 #include "Entrega2.h"
+#include <stdlib.h>
+#include <iostream>
+#include <string>
 class ElementoPila
 {
     //string
@@ -60,14 +63,16 @@ public:
     vector<Produccion> lista_producciones;
     vector<Terminal> terminales;
     vector<NoTerminal> no_terminales;
+    Gramatica gramatica;
     //dar
     vector<Fila> filas;
-    Tabla(vector<Nodo> lista_nodos,vector<Terminal> terminales,vector<NoTerminal> no_terminales,vector<Produccion>lista_producciones)
+    Tabla(vector<Nodo> lista_nodos,vector<Terminal> terminales,vector<NoTerminal> no_terminales,vector<Produccion>lista_producciones,Gramatica gramatica)
     {
+        this->gramatica=gramatica;
         this->lista_producciones=lista_producciones;
         this->terminales=terminales;
         this->no_terminales=no_terminales;
-        this->lista_producciones.insert(this->lista_producciones.begin(),Produccion("prima_"+this->lista_producciones[0].nombre));
+        this->lista_producciones.insert(this->lista_producciones.begin(),Produccion("prima_"+this->lista_producciones[0].nombre,this->lista_producciones[0].tipo));
         this->lista_producciones[0].simbolos.push_back(Simbolo("no terminal",this->lista_producciones[1].nombre));
         this->lista_nodos=lista_nodos;
         terminales.push_back(Terminal("$"));
@@ -141,6 +146,8 @@ public:
         std::stringstream buffer;
         buffer << f.rdbuf();
         std::string contents(buffer.str());
+        myfile<<getString(gramatica.string_import);
+        myfile<<getString(gramatica.string_parser_code);
         myfile<<contents;
         //escritura
         for(int i=0;i<lista_producciones.size();i++)
@@ -181,12 +188,35 @@ public:
             myfile<<"{"<<endl;
                 myfile<<"dolar.add(valores_pops.get(i));"<<endl;
             myfile<<"}"<<endl;
-        for(int i=1;i<=lista_producciones.size();i++)
+        for(int i=1;i<lista_producciones.size();i++)
         {
             myfile<<"if(numero=="<<i<<")"<<endl;
             myfile<<"{"<<endl;
-                myfile<<"System.out.println(numero);"<<endl;
-            myfile<<"return numero;"<<endl;
+                myfile<<"Object RESULT=null;"<<endl;
+                //myfile<<"System.out.println(numero);"<<endl;
+                string str=getString(lista_producciones[i].codigo);
+                string str_res="";
+                for(int j=0;str[j]!='\0';j++)
+                {
+                    if(str[j]=='$')
+                    {
+                        string num="";
+                        j++;
+                        for(;str[j]>='0'&&str[j]<='9';j++)
+                            num+=str[j];
+                        string nombre_p2=lista_producciones[i].simbolos[atoi(num.c_str())].nombre;
+                        string tipo_p2=gramatica.getTipoProduccion(nombre_p2);
+                        j--;
+                //cout<<"%%"<<atoi(num.c_str())<<nombre_p2<<tipo_p2<<endl;
+                        str_res+="("+tipo_p2+")dolar.get("+num+")";
+                    }else
+                    {
+                        str_res+=str[j];
+                    }
+                }
+                myfile<<str_res<<endl;
+                //myfile<<getString(lista_producciones[i].codigo)<<endl;
+                myfile<<"return (Integer)RESULT;"<<endl;
             myfile<<"}"<<endl;
         }
             myfile<<"return null;"<<endl;

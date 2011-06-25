@@ -19,16 +19,15 @@ public:
     Lexico(char* path)
     {
         archivo="";
-        ifstream read;
-        read.open(path,ios::in | ios::binary);
-        if(!read)
-        cout<<"Can't read the file";
-        while(read)
-        {
-            archivo+=read.get();
-        }
-        //cout<<archivo;
-        read.close();
+
+        //lectura parte1
+        ifstream f(path, ifstream::in);
+        std::stringstream buffer;
+        buffer << f.rdbuf();
+        std::string contents(buffer.str());
+
+        archivo=contents;
+
         palabras_reservadas.push_back("import");
         palabras_reservadas.push_back("class");
         palabras_reservadas.push_back("parser_code");
@@ -64,6 +63,8 @@ public:
         {
             char actual=archivo[i];
             if(actual!=' ' && actual!='\n' && actual!='\t')
+                token+=actual;
+            if(estado==2 && (actual==' ' || actual=='\n' || actual=='\t'))
                 token+=actual;
             switch (estado)
             {

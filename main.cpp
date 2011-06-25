@@ -17,20 +17,20 @@ int main()
     lexico.generarTokens();
     //lexico.printTokens();
     Gramatica gramatica(lexico);
-    gramatica.printFirst();
-    //cout<<"String import: "<<gramatica.string_import<<endl;
-    //cout<<"String parse_code: "<<gramatica.string_parser_code<<endl;
-    //cout<<"String class: "<<gramatica.string_class<<endl;
+    //gramatica.printFirst();
     //gramatica.printTerminales();
     //gramatica.printNoTerminales();
     //gramatica.printProducciones();
-    cout<<endl<<"Generando nodos:"<<endl;
+    //cout<<"String import: "<<gramatica.string_import<<endl;
+    //cout<<"String parse_code: "<<gramatica.string_parser_code<<endl;
+    //cout<<"String class: "<<gramatica.string_class<<endl;
+    //cout<<endl<<"Generando nodos:"<<endl;
     Entrega2 entrega2(gramatica);
     //entrega2.printProduccionesProcesadas();
     //entrega2.funcion_misterio();
     //cout<<entrega2.compararListaProducciones(entrega2.nodos[0],entrega2.nodos[0]);
     cout<<endl<<"Generando tabla:"<<endl;
-    Tabla tabla(entrega2.lista_nodos,gramatica.terminales,gramatica.no_terminales,gramatica.lista_producciones);
+    Tabla tabla(entrega2.lista_nodos,gramatica.terminales,gramatica.no_terminales,gramatica.lista_producciones,gramatica);
     tabla.print();
     tabla.escribirParser();
     cout<<endl<<"Escribiendo en el archivo MiParser.java"<<endl;
@@ -49,7 +49,6 @@ cout<<"  \\  \\:\\           \\__\\::/  \\  \\:\\  /:/   \\  \\:\\  /:/   \\  \\
 cout<<"   \\  \\:\\          /__/:/    \\  \\:\\/:/     \\  \\:\\/:/     \\  \\:\\   "<<endl;
 cout<<"    \\  \\:\\         \\__\\/      \\  \\::/       \\  \\::/       \\  \\:\\  "<<endl;
 cout<<"     \\__\\/                     \\__\\/         \\__\\/         \\__\\/  2.0"<<endl;
-
 
 /*
 

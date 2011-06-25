@@ -73,11 +73,16 @@ public:
     int posicion;
     string nombre;
     bool procesado;
-    Produccion(string nombre)
+    string tipo;
+
+    string codigo;
+    Produccion(string nombre,string tipo)
     {
         this->nombre=nombre;
         posicion=0;
         procesado=false;
+        codigo="";
+        this->tipo=tipo;
     }
     bool compararProduccion(Produccion pb)
     {
@@ -152,8 +157,7 @@ public:
         for(int i=0;i<set_no_terminales.size();i++)
             cout<<set_no_terminales[i]<<",";
         cout<<"}";
-
-        cout<<endl;
+        cout<<endl<<"codigo:"<<codigo<<endl;
     }
     string getString()
     {
@@ -296,13 +300,31 @@ public:
         int _i;
         int i2;
         for(_i=0;_i<lista_producciones.size();_i++)
-            if(lista_producciones[_i].nombre==nombre_produccion)
+            if(compararCadenas(lista_producciones[_i].nombre,nombre_produccion))
                 i2=_i;
         if(existeNoTerminal(simbolo.nombre))
             simbolo.tipo="no terminal";
         if(existeTerminal(simbolo.nombre))
             simbolo.tipo="terminal";
         lista_producciones[i2].simbolos.push_back(simbolo);
+    }
+    void agregarCodigo(string nombre_produccion,string codigo)
+    {
+        int _i;
+        int i2;
+        for(_i=0;_i<lista_producciones.size();_i++)
+            if(compararCadenas(lista_producciones[_i].nombre,nombre_produccion))
+                i2=_i;
+        lista_producciones[i2].codigo=codigo;
+    }
+    string getTipoProduccion(string nombre)
+    {
+        if(!existeNoTerminal(nombre))
+            return "String";
+        for(int i=0;i<no_terminales.size();i++)
+            if(compararCadenas(nombre,no_terminales[i].nombre))
+                return no_terminales[i].tipo;
+        return "Nula";
     }
     Gramatica()
     {
@@ -472,7 +494,13 @@ public:
             return false;
         }
         string nombre_produccion2=tokens[i-1].lexema;
-        lista_producciones.push_back(nombre_produccion2);
+
+        string tipo_terminal="";
+        for(int i=0;i<no_terminales.size();i++)
+            if(compararCadenas(no_terminales[i].nombre,nombre_produccion2))
+                tipo_terminal=no_terminales[i].tipo;
+
+        lista_producciones.push_back(Produccion(nombre_produccion2,tipo_terminal));
         if(!compararToken("puntuacion","->"))
         {
             cout<<"Error: se esperaba ->."<<endl;
@@ -490,7 +518,12 @@ public:
                 i--;
                 break;
             }
-            lista_producciones.push_back(nombre_produccion2);
+
+            string tipo_terminal="";
+            for(int i=0;i<no_terminales.size();i++)
+                if(compararCadenas(no_terminales[i].nombre,nombre_produccion2))
+                    tipo_terminal=no_terminales[i].tipo;
+            lista_producciones.push_back(Produccion(nombre_produccion2,tipo_terminal));
             if(!caso(nombre_produccion))
             {
                 cout<<"Error: se esperaba un caso dentro de la produccion."<<endl;
@@ -595,6 +628,7 @@ public:
                 i--;
                 if(compararToken("codigo"))
                 {
+                    agregarCodigo(nombre_produccion,tokens[i-1].lexema);
                     if(compararToken("cadena"))
                     {
                         //AQUI
@@ -640,6 +674,7 @@ public:
             {
                 cout<<"-"<<lista_producciones[i].simbolos[j].nombre<<endl;
                 cout<<" "<<lista_producciones[i].simbolos[j].tipo<<endl;
+                cout<<"codigo:"<<lista_producciones[i].codigo<<endl;
             }
         }
     }

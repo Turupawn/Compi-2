@@ -1,7 +1,24 @@
-nonterminal Object S,A,B;
-terminal x,b,a;
-S->A
-     | x b;
-A-> a A b
-     |B;
-B->x;
+<%import
+testttt qwert
+%>
+<%parser_code
+parrrsededed afaf
+%>
+%class mi_caslll
+
+terminal num,id,LPAREN,RPAREN,PLUS,MIN,TIMES,DIV,PYC;
+nonterminal Integer EP,F;
+nonterminal Integer E,T;
+
+EP -> E PYC {System.out.print($0);};
+
+E -> E PLUS F { RESULT=$0+$2; }
+| E MIN F { RESULT=$0-$2; }
+| F { RESULT=$0; };
+
+F -> F TIMES T { RESULT=$0*$2; }
+| F DIV T { RESULT=$0/$2; }
+| T { RESULT=$0; };
+
+T -> LPAREN E RPAREN { RESULT=$1; }
+| num { RESULT=new Integer($0); };

@@ -2,21 +2,21 @@
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Debug" />
 	<File name="Entrega2.h" open="1" top="0" tabpos="4">
-		<Cursor position="910" topLine="30" />
+		<Cursor position="2484" topLine="88" />
 	</File>
 	<File name="Entrega3.h" open="1" top="0" tabpos="5">
-		<Cursor position="7019" topLine="176" />
+		<Cursor position="7694" topLine="186" />
 	</File>
 	<File name="Gramatica.h" open="1" top="0" tabpos="3">
-		<Cursor position="21029" topLine="671" />
+		<Cursor position="14265" topLine="478" />
 	</File>
 	<File name="Lexico.h" open="1" top="0" tabpos="2">
-		<Cursor position="9095" topLine="51" />
+		<Cursor position="1722" topLine="57" />
 	</File>
 	<File name="gramatica" open="1" top="1" tabpos="6">
-		<Cursor position="2584" topLine="59" />
+		<Cursor position="457" topLine="0" />
 	</File>
 	<File name="main.cpp" open="1" top="0" tabpos="1">
-		<Cursor position="460" topLine="5" />
+		<Cursor position="578" topLine="12" />
 	</File>
 </CodeBlocks_layout_file>

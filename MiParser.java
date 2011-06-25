@@ -1,3 +1,7 @@
+ 
+testttt qwert
+ 
+parrrsededed afaf
 
 import com.sun.istack.internal.FinalArrayList;
 import java.lang.reflect.Array;
@@ -159,70 +163,175 @@ public class MiParser {
         //Inicializar gramatica
         //Inicializar tabla
 
-Produccion produccion0=new Produccion("prima_S");
-produccion0.simbolos.add(new Simbolo("S"));
+Produccion produccion0=new Produccion("prima_EP");
+produccion0.simbolos.add(new Simbolo("EP"));
 gramatica.add(produccion0);
-Produccion produccion1=new Produccion("S");
-produccion1.simbolos.add(new Simbolo("A"));
+Produccion produccion1=new Produccion("EP");
+produccion1.simbolos.add(new Simbolo("E"));
+produccion1.simbolos.add(new Simbolo("PYC"));
 gramatica.add(produccion1);
-Produccion produccion2=new Produccion("S");
-produccion2.simbolos.add(new Simbolo("x"));
-produccion2.simbolos.add(new Simbolo("b"));
+Produccion produccion2=new Produccion("E");
+produccion2.simbolos.add(new Simbolo("E"));
+produccion2.simbolos.add(new Simbolo("PLUS"));
+produccion2.simbolos.add(new Simbolo("F"));
 gramatica.add(produccion2);
-Produccion produccion3=new Produccion("A");
-produccion3.simbolos.add(new Simbolo("a"));
-produccion3.simbolos.add(new Simbolo("A"));
-produccion3.simbolos.add(new Simbolo("b"));
+Produccion produccion3=new Produccion("E");
+produccion3.simbolos.add(new Simbolo("E"));
+produccion3.simbolos.add(new Simbolo("MIN"));
+produccion3.simbolos.add(new Simbolo("F"));
 gramatica.add(produccion3);
-Produccion produccion4=new Produccion("A");
-produccion4.simbolos.add(new Simbolo("B"));
+Produccion produccion4=new Produccion("E");
+produccion4.simbolos.add(new Simbolo("F"));
 gramatica.add(produccion4);
-Produccion produccion5=new Produccion("B");
-produccion5.simbolos.add(new Simbolo("x"));
+Produccion produccion5=new Produccion("F");
+produccion5.simbolos.add(new Simbolo("F"));
+produccion5.simbolos.add(new Simbolo("TIMES"));
+produccion5.simbolos.add(new Simbolo("T"));
 gramatica.add(produccion5);
+Produccion produccion6=new Produccion("F");
+produccion6.simbolos.add(new Simbolo("F"));
+produccion6.simbolos.add(new Simbolo("DIV"));
+produccion6.simbolos.add(new Simbolo("T"));
+gramatica.add(produccion6);
+Produccion produccion7=new Produccion("F");
+produccion7.simbolos.add(new Simbolo("T"));
+gramatica.add(produccion7);
+Produccion produccion8=new Produccion("T");
+produccion8.simbolos.add(new Simbolo("LPAREN"));
+produccion8.simbolos.add(new Simbolo("E"));
+produccion8.simbolos.add(new Simbolo("RPAREN"));
+gramatica.add(produccion8);
+Produccion produccion9=new Produccion("T");
+produccion9.simbolos.add(new Simbolo("num"));
+gramatica.add(produccion9);
 
 
 Fila fila0=new Fila();
-fila0.terminales.add(new FilaTerminal("x", "d",3));
-fila0.terminales.add(new FilaTerminal("a", "d",4));
-fila0.no_terminales.add(new FilaNoTerminal("S",1));
-fila0.no_terminales.add(new FilaNoTerminal("A",2));
-fila0.no_terminales.add(new FilaNoTerminal("B",5));
+fila0.terminales.add(new FilaTerminal("LPAREN", "d",5));
+fila0.terminales.add(new FilaTerminal("num", "d",6));
+fila0.no_terminales.add(new FilaNoTerminal("EP",1));
+fila0.no_terminales.add(new FilaNoTerminal("E",2));
+fila0.no_terminales.add(new FilaNoTerminal("F",3));
+fila0.no_terminales.add(new FilaNoTerminal("T",4));
 filas.add(fila0);
 Fila fila1=new Fila();
 fila1.terminales.add(new FilaTerminal("$", "a",-1));
 filas.add(fila1);
 Fila fila2=new Fila();
-fila2.terminales.add(new FilaTerminal("$", "r",1));
+fila2.terminales.add(new FilaTerminal("PYC", "d",7));
+fila2.terminales.add(new FilaTerminal("PLUS", "d",8));
+fila2.terminales.add(new FilaTerminal("MIN", "d",9));
 filas.add(fila2);
 Fila fila3=new Fila();
-fila3.terminales.add(new FilaTerminal("b", "d",6));
-fila3.terminales.add(new FilaTerminal("$", "r",5));
+fila3.terminales.add(new FilaTerminal("TIMES", "d",10));
+fila3.terminales.add(new FilaTerminal("DIV", "d",11));
+fila3.terminales.add(new FilaTerminal("$", "r",4));
+fila3.terminales.add(new FilaTerminal("PYC", "r",4));
+fila3.terminales.add(new FilaTerminal("PLUS", "r",4));
+fila3.terminales.add(new FilaTerminal("MIN", "r",4));
+fila3.terminales.add(new FilaTerminal("RPAREN", "r",4));
 filas.add(fila3);
 Fila fila4=new Fila();
-fila4.terminales.add(new FilaTerminal("a", "d",4));
-fila4.terminales.add(new FilaTerminal("x", "d",8));
-fila4.no_terminales.add(new FilaNoTerminal("A",7));
-fila4.no_terminales.add(new FilaNoTerminal("B",5));
+fila4.terminales.add(new FilaTerminal("$", "r",7));
+fila4.terminales.add(new FilaTerminal("PYC", "r",7));
+fila4.terminales.add(new FilaTerminal("PLUS", "r",7));
+fila4.terminales.add(new FilaTerminal("MIN", "r",7));
+fila4.terminales.add(new FilaTerminal("TIMES", "r",7));
+fila4.terminales.add(new FilaTerminal("DIV", "r",7));
+fila4.terminales.add(new FilaTerminal("RPAREN", "r",7));
 filas.add(fila4);
 Fila fila5=new Fila();
-fila5.terminales.add(new FilaTerminal("$", "r",4));
-fila5.terminales.add(new FilaTerminal("b", "r",4));
+fila5.terminales.add(new FilaTerminal("LPAREN", "d",5));
+fila5.terminales.add(new FilaTerminal("num", "d",6));
+fila5.no_terminales.add(new FilaNoTerminal("E",12));
+fila5.no_terminales.add(new FilaNoTerminal("F",3));
+fila5.no_terminales.add(new FilaNoTerminal("T",4));
 filas.add(fila5);
 Fila fila6=new Fila();
-fila6.terminales.add(new FilaTerminal("$", "r",2));
+fila6.terminales.add(new FilaTerminal("$", "r",9));
+fila6.terminales.add(new FilaTerminal("PYC", "r",9));
+fila6.terminales.add(new FilaTerminal("PLUS", "r",9));
+fila6.terminales.add(new FilaTerminal("MIN", "r",9));
+fila6.terminales.add(new FilaTerminal("TIMES", "r",9));
+fila6.terminales.add(new FilaTerminal("DIV", "r",9));
+fila6.terminales.add(new FilaTerminal("RPAREN", "r",9));
 filas.add(fila6);
 Fila fila7=new Fila();
-fila7.terminales.add(new FilaTerminal("b", "d",9));
+fila7.terminales.add(new FilaTerminal("$", "r",1));
 filas.add(fila7);
 Fila fila8=new Fila();
-fila8.terminales.add(new FilaTerminal("$", "r",5));
-fila8.terminales.add(new FilaTerminal("b", "r",5));
+fila8.terminales.add(new FilaTerminal("LPAREN", "d",5));
+fila8.terminales.add(new FilaTerminal("num", "d",6));
+fila8.no_terminales.add(new FilaNoTerminal("F",13));
+fila8.no_terminales.add(new FilaNoTerminal("T",4));
 filas.add(fila8);
 Fila fila9=new Fila();
-fila9.terminales.add(new FilaTerminal("$", "r",3));
-fila9.terminales.add(new FilaTerminal("b", "r",3));
+fila9.terminales.add(new FilaTerminal("LPAREN", "d",5));
+fila9.terminales.add(new FilaTerminal("num", "d",6));
+fila9.no_terminales.add(new FilaNoTerminal("F",14));
+fila9.no_terminales.add(new FilaNoTerminal("T",4));
 filas.add(fila9);
+Fila fila10=new Fila();
+fila10.terminales.add(new FilaTerminal("LPAREN", "d",5));
+fila10.terminales.add(new FilaTerminal("num", "d",6));
+fila10.no_terminales.add(new FilaNoTerminal("T",15));
+filas.add(fila10);
+Fila fila11=new Fila();
+fila11.terminales.add(new FilaTerminal("LPAREN", "d",5));
+fila11.terminales.add(new FilaTerminal("num", "d",6));
+fila11.no_terminales.add(new FilaNoTerminal("T",16));
+filas.add(fila11);
+Fila fila12=new Fila();
+fila12.terminales.add(new FilaTerminal("RPAREN", "d",17));
+fila12.terminales.add(new FilaTerminal("PLUS", "d",8));
+fila12.terminales.add(new FilaTerminal("MIN", "d",9));
+filas.add(fila12);
+Fila fila13=new Fila();
+fila13.terminales.add(new FilaTerminal("TIMES", "d",10));
+fila13.terminales.add(new FilaTerminal("DIV", "d",11));
+fila13.terminales.add(new FilaTerminal("$", "r",2));
+fila13.terminales.add(new FilaTerminal("PYC", "r",2));
+fila13.terminales.add(new FilaTerminal("PLUS", "r",2));
+fila13.terminales.add(new FilaTerminal("MIN", "r",2));
+fila13.terminales.add(new FilaTerminal("RPAREN", "r",2));
+filas.add(fila13);
+Fila fila14=new Fila();
+fila14.terminales.add(new FilaTerminal("TIMES", "d",10));
+fila14.terminales.add(new FilaTerminal("DIV", "d",11));
+fila14.terminales.add(new FilaTerminal("$", "r",3));
+fila14.terminales.add(new FilaTerminal("PYC", "r",3));
+fila14.terminales.add(new FilaTerminal("PLUS", "r",3));
+fila14.terminales.add(new FilaTerminal("MIN", "r",3));
+fila14.terminales.add(new FilaTerminal("RPAREN", "r",3));
+filas.add(fila14);
+Fila fila15=new Fila();
+fila15.terminales.add(new FilaTerminal("$", "r",5));
+fila15.terminales.add(new FilaTerminal("PYC", "r",5));
+fila15.terminales.add(new FilaTerminal("PLUS", "r",5));
+fila15.terminales.add(new FilaTerminal("MIN", "r",5));
+fila15.terminales.add(new FilaTerminal("TIMES", "r",5));
+fila15.terminales.add(new FilaTerminal("DIV", "r",5));
+fila15.terminales.add(new FilaTerminal("RPAREN", "r",5));
+filas.add(fila15);
+Fila fila16=new Fila();
+fila16.terminales.add(new FilaTerminal("$", "r",6));
+fila16.terminales.add(new FilaTerminal("PYC", "r",6));
+fila16.terminales.add(new FilaTerminal("PLUS", "r",6));
+fila16.terminales.add(new FilaTerminal("MIN", "r",6));
+fila16.terminales.add(new FilaTerminal("TIMES", "r",6));
+fila16.terminales.add(new FilaTerminal("DIV", "r",6));
+fila16.terminales.add(new FilaTerminal("RPAREN", "r",6));
+filas.add(fila16);
+Fila fila17=new Fila();
+fila17.terminales.add(new FilaTerminal("$", "r",8));
+fila17.terminales.add(new FilaTerminal("PYC", "r",8));
+fila17.terminales.add(new FilaTerminal("PLUS", "r",8));
+fila17.terminales.add(new FilaTerminal("MIN", "r",8));
+fila17.terminales.add(new FilaTerminal("TIMES", "r",8));
+fila17.terminales.add(new FilaTerminal("DIV", "r",8));
+fila17.terminales.add(new FilaTerminal("RPAREN", "r",8));
+filas.add(fila17);
+}
 Object ejecutarProduccion(int numero,ArrayList<Object> valores_pops)
 {
 ArrayList<Object> dolar=new ArrayList<Object>();
@@ -232,38 +341,61 @@ dolar.add(valores_pops.get(i));
 }
 if(numero==1)
 {
-System.out.println(numero);
-return numero;
+Object RESULT=null;
+{System.out.print((Integer)dolar.get(0));}
+return (Integer)RESULT;
 }
 if(numero==2)
 {
-System.out.println(numero);
-return numero;
+Object RESULT=null;
+{ RESULT=(Integer)dolar.get(0)+(Integer)dolar.get(2); }
+return (Integer)RESULT;
 }
 if(numero==3)
 {
-System.out.println(numero);
-return numero;
+Object RESULT=null;
+{ RESULT=(Integer)dolar.get(0)-(Integer)dolar.get(2); }
+return (Integer)RESULT;
 }
 if(numero==4)
 {
-System.out.println(numero);
-return numero;
+Object RESULT=null;
+{ RESULT=(Integer)dolar.get(0); }
+return (Integer)RESULT;
 }
 if(numero==5)
 {
-System.out.println(numero);
-return numero;
+Object RESULT=null;
+{ RESULT=(Integer)dolar.get(0)*(Integer)dolar.get(2); }
+return (Integer)RESULT;
 }
 if(numero==6)
 {
-System.out.println(numero);
-return numero;
+Object RESULT=null;
+{ RESULT=(Integer)dolar.get(0)/(Integer)dolar.get(2); }
+return (Integer)RESULT;
+}
+if(numero==7)
+{
+Object RESULT=null;
+{ RESULT=(Integer)dolar.get(0); }
+return (Integer)RESULT;
+}
+if(numero==8)
+{
+Object RESULT=null;
+{ RESULT=(Integer)dolar.get(1); }
+return (Integer)RESULT;
+}
+if(numero==9)
+{
+Object RESULT=null;
+{ RESULT=new Integer((String)dolar.get(0)); }
+return (Integer)RESULT;
 }
 return null;
 }
 
-    }
 
     void print()
     {

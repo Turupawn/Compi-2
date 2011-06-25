@@ -95,7 +95,7 @@ public:
         num_nodo=0;
         this->gramatica=gramatica;
         //aumentar la produccion
-        lista_producciones.insert(lista_producciones.begin(),Produccion("prima_"+lista_producciones[0].nombre));
+        lista_producciones.insert(lista_producciones.begin(),Produccion("prima_"+lista_producciones[0].nombre,lista_producciones[0].tipo));
         lista_producciones[0].simbolos.push_back(Simbolo("no terminal",lista_producciones[1].nombre));
         //generar nodos
         generarNodos();
@@ -271,8 +271,8 @@ public:
             vector<Nodo> n_temp=procesarNodo(lista_nodos[x]);//get nodo a procesar
             //n_temp[0].print();
             //while ( getchar() != '\n');
-            cout<<x<<endl;
-            cout.flush();
+            //cout<<x<<endl;
+            //cout.flush();
 
             for(int i=0;i<n_temp.size();i++)//para cada nodo
                 if(n_temp[i].producciones.size()>0)//si no esta vacio
